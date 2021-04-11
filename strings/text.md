@@ -20,7 +20,7 @@ char* copy = strdup(msg); // strdup agrega el '\0' por nosotros.
 Lamentablemente la librería estándar es **extraordinariamente
 inconsistente** en este aspecto.
 
-Algunas funciones **no** ponen un `'\0'`, otras lo ponen pero solo si
+Algunas funciones **no** ponen un `'\0'`, otras lo ponen pero sólo si
 hay espacio suficiente y otras ponen el `'\0'` siempre.
 
 Acá hay un pequeño e incompleto resumen:
@@ -29,7 +29,7 @@ Acá hay un pequeño e incompleto resumen:
 `strndup`  siempre    `strncpy`  a veces
 
 Fijate en el par `strdup` y `strndup`, ambas siempre ponen un `'\0'` al
-final mientras que `strcpy` y `strncpy` no son consistentes entre si.
+final mientras que `strcpy` y `strncpy` no son consistentes entre sí.
 
 `strcpy` pone un `'\0'` mientras que `strncpy` lo hace solo si tiene
 espacio en el buffer destino.
@@ -54,14 +54,14 @@ char* copy = strdup(msg); // ☠ : comportamiento indefinido
 Cuando se trate de strings vamos a hacer una separación entre las
 funciones que asumen `'\0'` y las que no.
 
-Las primeras usan el `'\0'` para saber cual es el fin del string. Son
+Las primeras usan el `'\0'` para saber cuál es el fin del string. Son
 funciones que entienden que el string es **texto de humanos**.
 
 Las otras funciones ignoran cualquier `'\0'`. En cambio reciben
 por parámetro el **tamaño del string de entrada**. Son funciones que
 entienden que el string es un **string binario arbitrario**.
 
-Esta separación es **importantisima**.
+Esta separación es **importantísima**.
 
 Cuando estés trabajando con texto escrito por humanos, hay que usar
 las funciones que ven a los strings como texto. Tendrás que asegurarte
@@ -73,69 +73,66 @@ lo que daría un comportamiento indefinido.
 
 Vayamos a un par de ejemplos.
 
- - `size_t strlen(const char *s)`: De su [pagina de
+ - `size_t strlen(const char *s)`: De su [página de
 manual](https://man7.org/linux/man-pages/man3/strlen.3.html),
 *"calculates the length of the string...excluding the terminating null
 byte"*. Asume que el string termina en un `'\0'`, entonces es una
 función para **texto**.
- - `char *strncpy(char *dest, const char *src, size_t n)`: De su [pagina de
+ - `char *strncpy(char *dest, const char *src, size_t n)`: De su [página de
 manual](https://man7.org/linux/man-pages/man3/strcpy.3.html), *"copies
 the string...including the terminating null byte..."*. Asume un `'\0'`,
 función para **texto**.
- - `char *strncat(char *dest, const char *src, size_t n)`: De su [pagina de
+ - `char *strncat(char *dest, const char *src, size_t n)`: De su [página de
 manual](https://man7.org/linux/man-pages/man3/strcat.3.html), *"appends
 the `src` string to...overwriting the terminating null byte..."*.
 Adiviná? Asume un `'\0'`, función para **texto**.
- - `void *memcpy(void *dest, const void *src, size_t n)`: De su [pagina
+ - `void *memcpy(void *dest, const void *src, size_t n)`: De su [página
 de manual](https://man7.org/linux/man-pages/man3/memcpy.3.html),
 *"copies `n` bytes from memory area `src` to memory area `dest`"*. No
 asume nada, función para **binario**.
- - `int memcmp(const void *s1, const void *s2, size_t n)`: De su [pagina
+ - `int memcmp(const void *s1, const void *s2, size_t n)`: De su [página
 de manual](https://man7.org/linux/man-pages/man3/memcmp.3.html),
 *"compares the first `n` bytes...of the memory areas `s1` and `s2`"*. No
 asume nada, función para **binario**.
 
-Notas el patrón? Las funciones con nombres que empiezan con `str` son
+Notás el patrón? Las funciones con nombres que empiezan con `str` son
 funciones para texto, las que empiezan con `mem` son para binario.
 
 Cuidado que hay más funciones! `fgets` por ejemplo es para texto y
-`fread` es para binario y ninguna sigue el patron!
+`fread` es para binario y ninguna sigue el patrón!
 
-Es por eso que la documentación **oficial** como las paginas de manual
-son **escenciales**.
+Es por eso que la documentación **oficial** como las páginas de manual
+son **esenciales**.
 
-Ej:
+Ejercicios:
 
-Clasificá las siguientes funciones en *para texto* y *para binario*:
+1. Clasificá las siguientes funciones en *para texto* y *para binario*:
 `getline`, `stpcpy` (no es un typo, dije `stpcpy`), `wcpcpy`, `memmem` y
 `bzero`.
 
 Justificá con algún fragmento de la documentación oficial.
 
-Ej:
 
-Algunas funciones vienen de a parejas: hacen lo mismo pero una sirve
+1. Algunas funciones vienen de a parejas: hacen lo mismo pero una sirve
 para texto y la otra para binario.
 
 Por ejemplo `strncpy` y `memcpy` ambas copian strings.
 
 Completar las parejas faltantes:
 
-    strncpy     ..... <- aquí iría `memcpy`
-    strncat     .....
-    strncmp     .....
-    strchr      .....
+    `strncpy`     ..... ← aquí iría `memcpy`
+    `strncat`     .....
+    `strncmp`     .....
+    `strchr`      .....
 
-Ej:
 
-`strlen` **no** tiene una función equivalente para binario. Por que?
+1. `strlen` **no** tiene una función equivalente para binario. Por qué?
 
 Tip: si tuvieras que implementar `strlen` a mano, como la harías? Y si
 ahora tuvieras que implementarla pero sin asumir un `'\0'`? Ajá!
 
-Ej:
 
-Implementate una función `char* strreplace(const char* src, const char*
+1. Implementate una función `char* strreplace(const char* src, const char*
 search, const char* replace)`.
 
 Como lo podrás intuir, esta función toma
@@ -155,26 +152,25 @@ strreplace("pero a lZZZ ciegZZZ no les gustan lZZZ sordZZZ", "ZZZ", "os");
 pero a los ciegos no les gustan los sordos
 ```
 
-Ej:
 
-Implementá ahora la version para binario de `strreplace`: `memreplace`.
+1. Implementá ahora la versión para binario de `strreplace`: `memreplace`.
 
-Ya no podes asumir que `src`, `search` y `replace` terminan en un
+Ya no podés asumir que `src`, `search` y `replace` terminan en un
 `'\0'`. Qué parámetros adicionales tiene que recibir `memreplace`
 entonces? Tip: no son 3, son 4.
 
 ## Strings en C++
 
 Si entendiste los strings en C, en C++ es fácil: todo lo visto aplica a
-C++ pero ademas C++ tiene algunos objetos que te facilitaran la vida.
+C++ pero además C++ tiene algunos objetos que te facilitaran la vida.
 
-*Te lo resumo asi nomas*: para trabajar con texto usas `std::string`,
+*Te lo resumo así nomas*: para trabajar con texto usas `std::string`,
 para trabajar con binario usas `std::vector<char>`.
 
 Ej:
 
 Reimplementá `strreplace` y `memreplace` en sus versiones de C++. No
-vale usar ninguna función de C! Tenes que usar los métodos de
+vale usar ninguna función de C! Tenés que usar los métodos de
 `std::string` y `std::::vector<char>` respectivamente.
 
 ```cpp
@@ -194,19 +190,19 @@ Cuando un usuario se loguea a un sitio, su password es *hasheado* y
 este *hash* es usado para la autenticación, para determinar si el
 usuario es quien dice ser.
 
-Se usa un hash por que si algún atacante tomara el control del servidor
+Se usa un hash porque si algún atacante tomara el control del servidor
 del sitio podría robarse los hashes pero no los passwords. Es una forma
 de reducir el daño.
 
-> Por que es importante evitar el robo de passwords? Por que los humanos
-> tiende a *reusar sus passwords*. Los atacantes suelen apuntar a sitios
+> Por qué es importante evitar el robo de passwords? Porque los humanos
+> tienden a *reusar sus passwords*. Los atacantes suelen apuntar a sitios
 > web pocos seguros (digamos alguna plataforma de e-commerce) con el fin
 > de conseguir estos passwords y, con algo de suerte, comprometer
 > cuentas de otros sitios como Google o Facebook.
 
 *Crackear un password* es encontrar el password dado su hash.
 
-Debería ser una tarea imposible probar todas las possibles contraseñas
+Debería ser una tarea imposible probar todas las posibles contraseñas
 que pudiesen existir pero el humano tiende a utilizar passwords simples
 y *comunes* con solo algunas variantes.
 
@@ -216,7 +212,7 @@ más comunes en donde los tres son variantes de una misma palabra,
 
 Generar las posibles variantes de un password es conocido como *word
 mangling*, parte de un *ataque por diccionario basado en
-reglas de mutacion*.
+reglas de mutación*.
 
 Es una excusa perfecta para jugar con `std::string`: escribir un
 programa que tome una lista de passwords (conocido como diccionario) y
@@ -224,7 +220,7 @@ que genere todas las variantes posibles generadas a partir de una serie
 de reglas dadas por archivo.
 
 Hay decenas de reglas pero digamos que se soportan las siguientes:
-`lowercase`, `uppercase`, `reverse`, `insert @ N`, `replace` and
+`lowercase`, `uppercase`, `reverse`, `insert @ N`, `replace` y
 `duplicate`.
 
 Mírate la documentación de [Hashcat](https://hashcat.net/wiki/doku.php?id=rule_based_attack)
