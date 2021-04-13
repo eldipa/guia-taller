@@ -51,7 +51,7 @@ Léase *"corrupción de memoria y crash"*.
 
 ```cpp
 const char msg[] = {'h', 'e', 'l', 'l', 'o'}; // no hay ningún '\0'
-char* copy = strdup(msg); // ☠ : comportamiento indefinido
+char* copy = strdup(msg); // ⚠ comportamiento indefinido
 ```
 
 Cuando se trate de strings vamos a hacer una separación entre las
