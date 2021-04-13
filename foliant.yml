@@ -1,0 +1,24 @@
+title: Guia de Taller
+
+chapters:
+    - index.md
+    - strings/main.md
+
+backend_config:
+    pandoc:
+        params:
+            pdf_engine: xelatex
+            number_sections: true
+            top_level_division: chapter
+            #metadata: crossrefYaml= !path make_helpers/pandoc-crossref-es.yaml
+            #lua_filter: !path make_helpers/pandoc_list2table_filter.lua
+        number_sections: true
+        filters:
+              # note, pandoc-crossref needs to be called *before*
+              # "pandoc-citeproc" (used for citation)
+              # Also, if a custom template is used in Pandoc, you will have
+              # to tweak it.
+              # See pandoc-crossref's caveats section
+              # https://lierdakil.github.io/pandoc-crossref/
+            - !path make_helpers/pandoc-crossref-0.3.9-for-pandoc-2.11.4
+            - !path make_helpers/pandoc_filter.py3
