@@ -9,15 +9,23 @@ backend_config:
         params:
             pdf_engine: xelatex
             top_level_division: chapter
+            number_sections: true
+            include_in_header: !path make_helpers/header.tex
+            standalone: true
 
+            #metadata: crossrefYaml= !path make_helpers/pandoc-crossref-es.yaml
+            #lua_filter: !path make_helpers/pandoc_list2table_filter.lua
+        vars:
             # Number each section including chapters up to 3rd level
             # (number sections, subsections and subsubsections but
             # not further)
             # Yeup, I said "3" but secnumdepth is set to 2.
-            number_sections: true
-            variable: "secnumdepth=2"
-            #metadata: crossrefYaml= !path make_helpers/pandoc-crossref-es.yaml
-            #lua_filter: !path make_helpers/pandoc_list2table_filter.lua
+            secnumdepth: 2
+            # Make the document a 'book' like with odd and even pages having
+            # the same format (aka "oneside")
+            classoption: oneside
+            documentclass: book
+
         filters:
               # note, pandoc-crossref needs to be called *before*
               # "pandoc-citeproc" (used for citation)
