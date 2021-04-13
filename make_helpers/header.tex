@@ -7,8 +7,10 @@
 \newcounter{exercisecounter}[chapter]
 
 \usepackage{graphicx}
-\usepackage{newunicodechar}
 
+% Map Unicode emojis to PDF images. Based on coloremoji.sty
+% See https://github.com/alecjacobson/coloremoji.sty
+\usepackage{newunicodechar}
 \newunicodechar{😈}{\text{\raisebox{-0.2em}{\includegraphics[height=1em]{images/emoji/evil.pdf}}}}
 \newunicodechar{💣}{\text{\raisebox{-0.2em}{\includegraphics[height=1em]{images/emoji/bomb.pdf}}}}
 \newunicodechar{⚠}{\text{\raisebox{-0.2em}{\includegraphics[height=1em]{images/emoji/alert.pdf}}}}
