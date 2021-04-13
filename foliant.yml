@@ -8,11 +8,16 @@ backend_config:
     pandoc:
         params:
             pdf_engine: xelatex
-            number_sections: true
             top_level_division: chapter
+
+            # Number each section including chapters up to 3rd level
+            # (number sections, subsections and subsubsections but
+            # not further)
+            # Yeup, I said "3" but secnumdepth is set to 2.
+            number_sections: true
+            variable: "secnumdepth=2"
             #metadata: crossrefYaml= !path make_helpers/pandoc-crossref-es.yaml
             #lua_filter: !path make_helpers/pandoc_list2table_filter.lua
-        number_sections: true
         filters:
               # note, pandoc-crossref needs to be called *before*
               # "pandoc-citeproc" (used for citation)

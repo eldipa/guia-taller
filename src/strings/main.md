@@ -107,15 +107,17 @@ Cuidado que hay más funciones! `fgets` por ejemplo es para texto y
 Es por eso que la documentación **oficial** como las páginas de manual
 son **esenciales**.
 
-Ejercicios:
+#### Ejercicios
 
-[ej:] Clasificá las siguientes funciones en *para texto* y *para binario*:
+##### [ej:]
+Clasificá las siguientes funciones en *para texto* y *para binario*:
 `getline`, `stpcpy` (no es un typo, dije `stpcpy`), `wcpcpy`, `memmem` y
 `bzero`.
 
 Justificá con algún fragmento de la documentación oficial.
 
-[ej:] Algunas funciones vienen de a parejas: hacen lo mismo pero una sirve
+##### [ej:]
+Algunas funciones vienen de a parejas: hacen lo mismo pero una sirve
 para texto y la otra para binario.
 
 Por ejemplo `strncpy` y `memcpy` ambas copian strings.
@@ -130,13 +132,15 @@ Completar las parejas faltantes:
 ---------  ------------- ---------------------
 
 
-[ej:] `strlen` **no** tiene una función equivalente para binario. Por qué?
+##### [ej:]
+`strlen` **no** tiene una función equivalente para binario. Por qué?
 
 Tip: si tuvieras que implementar `strlen` a mano, como la harías? Y si
 ahora tuvieras que implementarla pero sin asumir un `'\0'`? Ajá!
 
 
-[ej:] Implementate una función `char* strreplace(const char* src, const char*
+##### [ej:]
+Implementate una función `char* strreplace(const char* src, const char*
 search, const char* replace)`{.cpp}.
 
 Como lo podrás intuir, esta función toma
@@ -157,7 +161,8 @@ pero a los ciegos no les gustan los sordos
 ```
 
 
-[ej:] Implementá ahora la versión para binario de `strreplace`: `memreplace`.
+##### [ej:]
+Implementá ahora la versión para binario de `strreplace`: `memreplace`.
 
 Ya no podés asumir que `src`, `search` y `replace` terminan en un
 `'\0'`. Qué parámetros adicionales tiene que recibir `memreplace`
@@ -171,7 +176,9 @@ C++ pero además C++ tiene algunos objetos que te facilitaran la vida.
 *Te lo resumo así nomas*: para trabajar con texto usas `std::string`,
 para trabajar con binario usas `std::vector<char>`.
 
-Ej:
+#### Ejercicios
+
+##### [ej:]
 
 Reimplementá `strreplace` y `memreplace` en sus versiones de C++. No
 vale usar ninguna función de C! Tenés que usar los métodos de
@@ -188,8 +195,8 @@ std::vector<char> memreplace(const std::vector<char>& src, const std::vector<cha
 Tip: revisar que métodos disponen `std:string` y `std::vector` antes de
 codear.
 
-Ej:
 
+##### [ej:]
 Cuando un usuario se loguea a un sitio, su password es *hasheado* y
 este *hash* es usado para la autenticación, para determinar si el
 usuario es quien dice ser.
@@ -224,10 +231,12 @@ que genere todas las variantes posibles generadas a partir de una serie
 de reglas dadas por archivo.
 
 Hay decenas de reglas pero digamos que se soportan las siguientes:
-`lowercase`, `uppercase`, `reverse`, `insert @ N`, `replace` y
+`lowercase`, `uppercase`, `reverse`, `insert`, `replace` y
 `duplicate`.
 
-Mírate la documentación de [Hashcat](https://hashcat.net/wiki/doku.php?id=rule_based_attack)
+Que deberían hacer cada una de estas reglas esta dicho en
+la documentación de [Hashcat](https://hashcat.net/wiki/doku.php?id=rule_based_attack),
+una herramienta para cracking de passwords.
 
 Passwords
 https://xkcd.com/936/

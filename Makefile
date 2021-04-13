@@ -18,4 +18,4 @@ shell:
 	sudo docker run --rm -it  -v `pwd`:/usr/src/app -w /usr/src/app --entrypoint="" ${DOCKERIMG} bash
 
 clean:
-	rm -f output/logs/*
+	rm -f output/logs/* output/logs/.*
