@@ -26,6 +26,9 @@ backend_config:
             classoption: oneside
             documentclass: book
 
+            # Make the links be footnotes
+            links-as-notes: true
+
         filters:
               # note, pandoc-crossref needs to be called *before*
               # "pandoc-citeproc" (used for citation)
