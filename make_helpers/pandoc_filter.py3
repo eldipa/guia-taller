@@ -24,7 +24,7 @@ def set_cpp_as_lang_for_inline_code(elem, doc):
     if type(elem) == Code and not elem.classes:
         elem.classes.append("cpp")
 
-def enumarate_exercise(elem, doc):
+def enumarate_exercises_and_projects(elem, doc):
     ''' Replace the header with a literal string '[ej:]' with 'Ej x.y:' where
         'x' is replaced by the current chapter number and 'y' is
         the incremented 'exercisecounter' value.
@@ -45,27 +45,36 @@ def enumarate_exercise(elem, doc):
 
         Note: only headers of level 5 are allowed. Other header with the
         same literal string will be considered an error.
+
+        Do the same replacements for headers with '[proj:]' using a
+        different counter: 'projectcounter'.
     '''
     if (type(elem) == Header and \
             len(elem.content) == 1 and \
             type(elem.content[0]) == Str and \
-            elem.content[0].text == '[ej:]'
+            elem.content[0].text in ('[ej:]', '[proj:]')
             ):
         if elem.level != 5:
             raise Exception()
 
+        is_exercise = elem.content[0].text == '[ej:]'
+        assert is_exercise or elem.content[0].text == '[proj:]'
+
+        label = "Ej" if is_exercise else "Proj"
+        counter = "exercisecounter" if is_exercise else "projectcounter"
+
         elem.content = [
-                Str(text="Ej"),
+                Str(text=label),
                 Space(),
                 RawInline(text=r"\arabic{chapter}", format='tex'),
                 Str(text="."),
-                RawInline(text=r"\arabic{exercisecounter}", format='tex'),
+                RawInline(text=r"\arabic{%s}" % counter, format='tex'),
                 Str(text=":"),
         ]
 
         return [
                 Plain(
-                    RawInline(text=r"\stepcounter{exercisecounter}", format='tex')
+                    RawInline(text=r"\stepcounter{%s}" % counter, format='tex')
                     ),
                 elem,
                 ]
@@ -87,5 +96,5 @@ if __name__ == '__main__':
         run_filters([
             what,
             set_cpp_as_lang_for_inline_code,
-            enumarate_exercise,
+            enumarate_exercises_and_projects,
             ])

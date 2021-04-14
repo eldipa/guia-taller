@@ -13,7 +13,9 @@ Por suerte algunas funciones de la librería estándar de C ya lo hacen
 por nosotros como lo hace `strdup`:
 
 ```cpp
-const char* msg = "hello";  // después de la 'o', el compilador agrega el '\0'.
+const char* msg = "hello";  // después de la 'o', el compilador
+                            // agrega el '\0'.
+
 char* copy = strdup(msg); // strdup agrega el '\0' por nosotros.
 ```
 
@@ -140,8 +142,15 @@ ahora tuvieras que implementarla pero sin asumir un `'\0'`? Ajá!
 
 
 ##### [ej:]
-Implementate una función `char* strreplace(const char* src, const char*
-search, const char* replace)`{.cpp}.
+Implementate la siguiente función:
+
+```cpp
+char* strreplace(
+    const char* src,
+    const char* search,
+    const char* replace
+)
+```
 
 Como lo podrás intuir, esta función toma
 un string *null terminated* `src` y busca todas las apariciones de otro
@@ -152,11 +161,17 @@ La función retorna el nuevo string con los reemplazos hechos.
 
 Tratá de codear lo menos posible y hacer uso de la librería estándar.
 
+Algunos ejemplos,
+
 ```cpp
 strreplace("sopa de {} es todo lo que como", "{}", "almejas");
 sopa de almejas es todo lo que como
 
-strreplace("pero a lZZZ ciegZZZ no les gustan lZZZ sordZZZ", "ZZZ", "os");
+strreplace(
+    "pero a lZZZ ciegZZZ no les gustan lZZZ sordZZZ",
+    "ZZZ",
+    "os"
+);
 pero a los ciegos no les gustan los sordos
 ```
 
@@ -186,30 +201,38 @@ vale usar ninguna función de C! Tenés que usar los métodos de
 
 ```cpp
 // Para texto
-std::string strreplace(const std::string& src, const std::string& search, const std::string& replace);
+std::string strreplace(
+    const std::string& src,
+    const std::string& search,
+    const std::string& replace
+);
 
 // Para binario
-std::vector<char> memreplace(const std::vector<char>& src, const std::vector<char>& search, const std::vector<char>& replace);
+std::vector<char> memreplace(
+    const std::vector<char>& src,
+    const std::vector<char>& search,
+    const std::vector<char>& replace
+);
 ```
 
 Tip: revisar que métodos disponen `std:string` y `std::vector` antes de
 codear.
 
 
-##### [ej:]
+##### [proj:]
 Cuando un usuario se loguea a un sitio, su password es *hasheado* y
 este *hash* es usado para la autenticación, para determinar si el
 usuario es quien dice ser.
 
 Se usa un hash porque si algún atacante tomara el control del servidor
-del sitio podría robarse los hashes pero no los passwords. Es una forma
+del sitio podrá robarse los hashes pero no los passwords. Es una forma
 de reducir el daño.
 
 > Por qué es importante evitar el robo de passwords? Porque los humanos
 > tienden a *reusar sus passwords*. Los atacantes suelen apuntar a sitios
 > web pocos seguros (digamos alguna plataforma de e-commerce) con el fin
 > de conseguir estos passwords y, con algo de suerte, comprometer
-> cuentas de otros sitios como Google o Facebook.
+> cuentas de otros sitios como Google o Facebook. 😈
 
 *Crackear un password* es encontrar el password dado su hash.
 
@@ -227,8 +250,8 @@ reglas de mutación*.
 
 Es una excusa perfecta para jugar con `std::string`: escribir un
 programa que tome una lista de passwords (conocido como diccionario) y
-que genere todas las variantes posibles generadas a partir de una serie
-de reglas dadas por archivo.
+que genere todas las variantes posibles de cada password generadas
+a partir de una serie de reglas dadas por archivo.
 
 Hay decenas de reglas pero digamos que se soportan las siguientes:
 `lowercase`, `uppercase`, `reverse`, `insert`, `replace` y
