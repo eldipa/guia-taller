@@ -245,24 +245,90 @@ más comunes en donde los tres son variantes de una misma palabra,
 "*admin"*.
 
 Generar las posibles variantes de un password es conocido como *word
-mangling*, parte de un *ataque por diccionario basado en
-reglas de mutación*.
+mangling*.
 
 Es una excusa perfecta para jugar con `std::string`: escribir un
-programa que tome una lista de passwords (conocido como diccionario) y
+programa `wm` que tome una lista de passwords (conocido como diccionario) y
 que genere todas las variantes posibles de cada password generadas
-a partir de una serie de reglas dadas por archivo.
+a partir de una serie de *reglas de mutación* dadas por archivo.
 
-Hay decenas de reglas pero digamos que se soportan las siguientes:
-`lowercase`, `uppercase`, `reverse`, `insert`, `replace` y
-`duplicate`.
+Reglas posibles:
 
-Que deberían hacer cada una de estas reglas esta dicho en
-la documentación de [Hashcat](https://hashcat.net/wiki/doku.php?id=rule_based_attack),
-una herramienta para cracking de passwords.
+ - `upper <b> <e>`: reemplaza el rango de letras por mayúsculas.
+ - `lower <b> <e>`: reemplaza el rango de letras por minúsculas.
+ - `replace <b> <e> <p> <q>`: reemplaza en el rango dado toda aparición de
+la letra `<p>` por `<q>`.
+ - `repeat <b> <e> <t> <i>`: toma el rango de letras e inserta en la
+posición `<i>` la repetición del rango `<t>` veces.
+ - `rotate <n>`: rota las letras `<n>` posiciones hacia la derecha (si
+`<n>` en negativo lo hace a la izquierda). La rotación es un *shift
+circular*.
+ - `insert <i> <x>`: inserte el texto `<x>` en la posición `<i>`.
+ - `delete <b> <e>`{.noclass}: borra el rango de letras.
+ - `revert <n>`: revierte la aplicación de las `<n>` reglas anteriores.
+ - `apply <f>`: aplica las reglas de mutación del archivo `<f>`.
+ - `print`: imprime el password actual.
 
-Passwords
-https://xkcd.com/936/
+La notación `<b> <e>` denota un rango de letras siendo `<b>` el índice
+de la primer letra seleccionada y `<e>` de la última.
 
+Los índices `<b>`, `<e>` y `<i>` son 0-based. Si son negativos, el
+índice se interpreta de atrás hacia adelante (`-1` es la última letra).
+
+Suponete el siguiente diccionario:
+
+```shell
+$ cat dictionary.txt
+password
+admin
+```
+
+Veamos ahora algunas ejemplos de cómo debería `wm`:
+
+```shell
+$ cat rules-append-number.txt
+insert -1 1
+print
+insert -1 !
+print
+revert 1
+insert -1 23
+print
+insert -1 !
+print
+
+$ ./wm dictionary.txt rules-append-number.txt
+password1
+password1!
+password123
+password123!
+admin1
+admin1!
+admin123
+admin123!
+
+$ cat rules-repeat.txt
+uppercase 0 0
+replace 0 -1 o 0
+repeat 0 -1 1 -1
+print
+
+$ ./wm dictionary.txt rules-repeat.txt
+Passw0rdPassw0rd
+AdminAdmin
+```
+
+Si queres probar tus reglas podes usar un diccionario como
+[`rockyou`](https://en.wikipedia.org/wiki/RockYou) y
+crackear este password con [Hashcat](https://hashcat.net/):
+
+```
+8ff94d5b6241bc49c8831d0a669b0a8f
+```
+
+<x-img src="!path images/xkcd/password_strength_936.png">
+Algo para pensar cuando elijas un password. Créditos por la imagen
+a xkcd (936).
+</x-img>
 
 
