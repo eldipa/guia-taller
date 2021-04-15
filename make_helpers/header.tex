@@ -22,4 +22,15 @@
 \usepackage{draftwatermark}
 \SetWatermarkColor[gray]{0.96}
 
+% call \chapterauthor{aaa} *after* each chapter begin to name the author
+% of it
+\makeatletter
+\newcommand{\chapterauthor}[1]{%
+  {\parindent0pt\vspace*{-25pt}%
+  \linespread{1.1}\large\scshape#1%
+  \par\nobreak\vspace*{35pt}}
+  \@afterheading%
+}
+\makeatother
+
 % END OF INCLUSION
