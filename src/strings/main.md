@@ -219,7 +219,7 @@ Tip: revisar que métodos disponen `std:string` y `std::vector` antes de
 codear.
 
 
-##### [proj:]
+##### [proj: Word Mangling]
 Cuando un usuario se loguea a un sitio, su password es *hasheado* y
 este *hash* es usado para la autenticación, para determinar si el
 usuario es quien dice ser.
@@ -283,28 +283,22 @@ password
 admin
 ```
 
-Veamos ahora algunas ejemplos de cómo debería `wm`:
+Veamos ahora algunos ejemplos de como se ejecutaría `wm`:
 
 ```shell
 $ cat rules-append-number.txt
 insert -1 1
-print
 insert -1 !
 print
 revert 1
 insert -1 23
-print
 insert -1 !
 print
 
 $ ./wm dictionary.txt rules-append-number.txt
-password1
 password1!
-password123
 password123!
-admin1
 admin1!
-admin123
 admin123!
 
 $ cat rules-repeat.txt

@@ -50,18 +50,62 @@ def enumarate_exercises_and_projects(elem, doc):
         different counter: 'projectcounter'.
     '''
     if (type(elem) == Header and \
-            len(elem.content) == 1 and \
-            type(elem.content[0]) == Str and \
-            elem.content[0].text in ('[ej:]', '[proj:]')
+            len(elem.content) >= 1 and \
+            type(elem.content[0]) == Str
             ):
+
+        first = elem.content[0].text
+        if not first.startswith('[ej:') and not first.startswith('[proj:'):
+            return
+
+        if first not in ('[ej:]', '[proj:]', '[proj:'):
+            raise Exception()
+
         if elem.level != 5:
             raise Exception()
 
-        is_exercise = elem.content[0].text == '[ej:]'
-        assert is_exercise or elem.content[0].text == '[proj:]'
+        # so far, the header must be one of:
+        #   [ej:]
+        #   [proj:]
+        #   [proj: xxx]
+        #   [proj: xxx ]
 
-        label = "Ej" if is_exercise else "Proj"
-        counter = "exercisecounter" if is_exercise else "projectcounter"
+        is_exercise = first == '[ej:]'
+        del first
+
+        if is_exercise and len(elem.content) != 1:
+            raise Exception()
+
+        if is_exercise:
+            label = "Ej"
+            counter = "exercisecounter"
+            title = []
+        else:
+            label = "Proj"
+            counter = "projectcounter"
+
+            if len(elem.content) == 1:
+                # just nameless [proj:]
+                title = []
+            else:
+                # strip head '[proj:'
+                del elem.content[0]
+
+                # ensure that the last item is 'xxx]'
+                last = elem.content[-1]
+                if not type(last) == Str:
+                    raise Exception()
+
+                if not last.text.endswith(']') or len(last.text) <= 1:
+                    raise Exception()
+
+                # strip the trailing ']'
+                if len(last.text) == 1:
+                    del elem.content[-1]
+                else:
+                    last.text = last.text[:-1]
+
+                title = list(elem.content)
 
         elem.content = [
                 Str(text=label),
@@ -69,7 +113,9 @@ def enumarate_exercises_and_projects(elem, doc):
                 RawInline(text=r"\arabic{chapter}", format='tex'),
                 Str(text="."),
                 RawInline(text=r"\arabic{%s}" % counter, format='tex'),
-                Str(text=":"),
+                *title,
+                Str(text=':')
+
         ]
 
         return [
