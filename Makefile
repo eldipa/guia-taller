@@ -24,6 +24,7 @@ shell: _foliant_conf
 
 clean:
 	rm -f output/logs/*
+	rm -f *.pdf *.tex
 
 # create the foliant configuration file based on a base/general conf
 # and a custom chapter list.

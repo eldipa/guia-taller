@@ -1,5 +1,3 @@
-title: Guia de Taller
-
 preprocessors:
     - ximg
 
@@ -27,6 +25,10 @@ backend_config:
 
             # Make the links be footnotes
             links-as-notes: true
+
+            title: Guía de Taller
+            author: Martín Di Paola
+            date: 2021
 
         filters:
               # note, pandoc-crossref needs to be called *before*
