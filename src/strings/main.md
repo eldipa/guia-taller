@@ -238,7 +238,8 @@ de reducir el daño.
 
 Debería ser una tarea imposible probar todas las posibles contraseñas
 que pudiesen existir pero el humano tiende a utilizar passwords simples
-y *comunes* con solo algunas variantes.
+y *comunes* con solo [algunas
+variantes](https://wpengine.com/resources/passwords-unmasked-infographic/).
 
 Por ejemplo *"admin"*, *"admin123"* y *"admin123!"* son los passwords
 más comunes en donde los tres son variantes de una misma palabra,
