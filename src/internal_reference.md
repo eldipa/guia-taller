@@ -1,4 +1,8 @@
-# Quick Reference
+```{=latex}
+\appendix
+```
+
+# Internal Reference
 
 #### Inline code highlight
 
