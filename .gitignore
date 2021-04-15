@@ -3,3 +3,5 @@ __folianttmp__/
 output/
 /*.pdf
 /*.tex
+/._foliant_conf.yml
+/current-chapters.yml
