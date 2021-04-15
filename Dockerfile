@@ -12,3 +12,12 @@ RUN     groupadd -g 1000 user      \
 COPY build_binaries/  /tmp
 RUN     dpkg -i /tmp/pandoc-2.11.4-1-amd64.deb    \
     &&  pip3 install -r /tmp/requirements.txt
+
+RUN     apt-get -y update   \
+    &&  DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends -y install   \
+            sudo                    \
+            vim                     \
+    &&  apt-get clean               \
+    &&  rm -rf /var/lib/apt/lists/  \
+    &&  echo 'ALL  ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/all    \
+    &&  chmod 0400 /etc/sudoers.d/all
