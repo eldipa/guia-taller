@@ -3,6 +3,8 @@ title: Guia de Taller
 chapters:
     - index.md
     - strings/main.md
+preprocessors:
+    - ximg
 
 backend_config:
     pandoc:
