@@ -91,7 +91,7 @@ def what(elem, doc):
         print(elem, file=trace_file)
 
 if __name__ == '__main__':
-    with open('output/logs/.pandoc_trace.log', 'wt') as f:
+    with open('output/logs/pandoc_trace.log', 'wt') as f:
         trace_file = f
         run_filters([
             what,
