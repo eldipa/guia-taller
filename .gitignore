@@ -5,3 +5,4 @@ output/
 /*.tex
 /._foliant_conf.yml
 /current-chapters.yml
+/.tokens
