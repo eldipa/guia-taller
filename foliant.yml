@@ -3,6 +3,8 @@ title: Guia de Taller
 chapters:
     - index.md
     - strings/main.md
+    - internal_reference.md
+
 preprocessors:
     - ximg
 
