@@ -1,16 +1,27 @@
 
 # Strings
 
-Cuando el compilador ver un string escrito en el programa, este le
+En C y C++ los strings son bloques contiguos de memoria: representan
+tanto texto como *chunks* de data binaria.
+
+Ambos casos se representan con `char*` lo que puede generar confusión
+y como `char*` es sólo un puntero sin noción del tamaño del string, es
+fácil caer en alguna corrupción de memoria.
+
+Pero ya llegaremos a eso; arranquemos por el principio.
+
+## Null terminated
+
+Cuando el compilador ve un string *escrito* en el programa, este le
 agrega un `'\0'` al final.
 
-Es el compilador en tiempo de compilación quien pone el `'\0'`.
+Es el compilador en *tiempo de compilación* quien pone el `'\0'`.
 
-Eso significa que si se construye un string en memoria es el programador
-(**vos**) quien debe responsabilizarse de poner un `'\0'` al final.
+Pero si el string se construye en *runtime* es el programador
+(**vos y yo**) quien debe responsabilizarse de poner un `'\0'` al final.
 
 Por suerte algunas funciones de la librería estándar de C ya lo hacen
-por nosotros como lo hace `strdup`:
+por nosotros:
 
 ```cpp
 const char* msg = "hello";  // después de la 'o', el compilador
@@ -27,7 +38,6 @@ hay espacio suficiente y otras ponen el `'\0'` siempre.
 
 Acá hay un pequeño e incompleto resumen:
 
-
 ---------------------   ---------------------   -----------------
 `strdup`  →  siempre    `strcpy`  →  siempre    `memcpy` →  nunca
 `strndup` →  siempre    `strncpy` →  a veces
@@ -39,7 +49,83 @@ final mientras que `strcpy` y `strncpy` no son consistentes entre sí.
 `strcpy` pone un `'\0'` mientras que `strncpy` lo hace solo si tiene
 espacio en el buffer destino.
 
-Y la cosa no termina acá...
+#### Ejercicios
+
+##### [ej:]
+`strcpy` copia un string a un buffer destino. Su firma es:
+
+```cpp
+char* strcpy(char* dst, const char* src);
+```
+
+Codeá y ejecutá el siguiente snippet:
+
+```cpp
+char buf[10]
+strcpy(buf, "hello");   // copia "hello" a buf
+printf("%s\n", buf);
+```
+
+Cuántos bytes tiene disponibles `buf` antes de la copia?
+
+Cuántos bytes se copiaron? No especules, **lee** la documentación de
+`strcpy`. Cuál es la condición de corte para frenar el copiado?
+
+Corré el código con Valgrind.
+
+##### [ej:]
+Probá ahora en cambiar el tamaño de `buf` a 5. Qué sucede? Y si el
+tamaño fuera 1?
+
+`strcpy` **no tiene forma de saber** cuantos bytes tiene el buffer
+destino porque sólo recibió un `char*` como parámetro.
+
+`strncpy`, en cambio, recibe el tamaño del buffer **destino** para
+frenar la copia antes y evitar el *buffer overflow*.
+
+##### [ej:]
+
+Al igual que `strcpy`, las siguientes funciones **escriben en un buffer
+sin tener en cuenta su tamaño** por lo que son susceptibles a un buffer
+overflow.
+
+```cpp
+int sprintf(char* str, const char* format, ...);
+char* gets(char* s);
+char* strcat(char* dest, const char* src);
+int scanf(const char* format, ...); // Tip: scanf("%s", ...);
+```
+
+Codear un ejemplo que triggeree dicho buffer overflow para cada una.
+
+##### [ej:]
+
+Como se vió, `strncpy` es la versión *"segura"* de `strcpy`. Cuáles son
+las funciones *"seguras"* de las funciones del ejercicio anterior?
+
+
+##### [ej:]
+
+`strncpy` es *"segura"* sólo si se la usa correctamente!
+
+Sólo una las llamadas es correcta y el resto es *fruta*.
+
+Cuáles y por qué?
+
+```cpp
+char dst[10];
+char src[1000];
+
+strncpy(dst, src, sizeof(src));
+strncpy(dst, src, strlen(dst));
+strncpy(dst, src, sizeof(dst));
+strncpy(dst, src, strlen(src));
+```
+
+Nota: `strncpy` evita el buffer overflow pero **no** pone un `'\0'` en
+ese caso. Por eso es **siempre** buena idea poner un `'\0'` explícito
+luego de la copia: `dst[sizeof(dst)-1] = 0;`
+
 
 ## Texto o binario?
 
@@ -59,24 +145,30 @@ char* copy = strdup(msg); // ⚠ comportamiento indefinido
 Cuando se trate de strings vamos a hacer una separación entre las
 funciones que asumen `'\0'` y las que no.
 
-Las primeras usan el `'\0'` para saber cuál es el fin del string. Son
-funciones que entienden que el string es **texto de humanos**.
+Las primeras usan el `'\0'` para saber cuál es el fin del string.
 
-Las otras funciones ignoran cualquier `'\0'`. En cambio reciben
-por parámetro el **tamaño del string de entrada**. Son funciones que
+Como los humanos no hablan binario, usar el byte 0 como fin del string
+es práctico ya que no debería haber un `'\0'` en el medio del string que
+pueda malinterpretarse.
+
+Son funciones que entienden que el string es **texto de humanos**.
+
+Las otras funciones ignoran cualquier `'\0'` y en cambio, reciben
+por parámetro el **tamaño del string**. Son funciones que
 entienden que el string es un **string binario arbitrario**.
 
 Esta separación es **importantísima**.
 
 Cuando estés trabajando con texto escrito por humanos, hay que usar
-las funciones que ven a los strings como texto. Tendrás que asegurarte
+las funciones que vean a los strings como texto. Tendrás que asegurarte
 que **siempre** tengan un `'\0'` al final!
 
 Cuando estés trabajando con binario, **no** uses las funciones para el
-texto. Un string binario puede perfectamente no tener un `'\0'` al final
+texto. Un string binario puede tener una cantidad arbitraria de `'\0'`
+y hasta puede perfectamente no tener un `'\0'` al final
 lo que daría un comportamiento indefinido.
 
-Vayamos a un par de ejemplos.
+Vayamos a un par de ejemplos yendo a la documentación oficial:
 
  - `size_t strlen(const char *s)`: De su [página de
 manual](https://man7.org/linux/man-pages/man3/strlen.3.html),
@@ -103,8 +195,8 @@ asume nada, función para **binario**.
 Notás el patrón? Las funciones con nombres que empiezan con `str` son
 funciones para texto, las que empiezan con `mem` son para binario.
 
-Cuidado que hay más funciones! `fgets` por ejemplo es para texto y
-`fread` es para binario y ninguna sigue el patrón!
+Cuidado que hay más funciones que estas! `fgets` por ejemplo es para texto y
+`fread` es para binario y ninguna sigue el patrón.
 
 Es por eso que la documentación **oficial** como las páginas de manual
 son **esenciales**.
@@ -117,6 +209,11 @@ Clasificá las siguientes funciones en *para texto* y *para binario*:
 `bzero`.
 
 Justificá con algún fragmento de la documentación oficial.
+
+##### [ej:]
+C/C++ no son los únicos que mezclan texto y binario. Buscá que
+*sorpresas* suceden al mezclar `str`{.python} y `unicode`{.python}
+en Python 2 (en Python 3 lo arreglaron pero fue un parto). Y en Ruby?
 
 ##### [ej:]
 Algunas funciones vienen de a parejas: hacen lo mismo pero una sirve
@@ -153,8 +250,8 @@ char* strreplace(
 ```
 
 Como lo podrás intuir, esta función toma
-un string *null terminated* `src` y busca todas las apariciones de otro
-*null terminated* string `search` y las reemplaza por `replace`
+un *null terminated string* `src` y busca todas las apariciones de otro
+*null terminated string* `search` y las reemplaza por `replace`
 (también *null terminated*).
 
 La función retorna el nuevo string con los reemplazos hechos.
@@ -185,8 +282,9 @@ entonces? Tip: no son 3, son 4.
 
 ## Strings en C++
 
-Si entendiste los strings en C, en C++ es fácil: todo lo visto aplica a
-C++ pero además C++ tiene algunos objetos que te facilitaran la vida.
+Si entendiste los strings en C, en C++ te va a resultar más fácil:
+todo lo visto aplica a C++ pero además C++ tiene algunos objetos
+que te facilitaran la vida.
 
 *Te lo resumo así nomas*: para trabajar con texto usas `std::string`,
 para trabajar con binario usas `std::vector<char>`.
@@ -215,7 +313,9 @@ std::vector<char> memreplace(
 );
 ```
 
-Tip: revisar que métodos disponen `std:string` y `std::vector` antes de
+Tip: revisar que [métodos](https://www.cplusplus.com/reference/)
+[disponen](https://en.cppreference.com/w/)
+`std:string` y `std::vector` antes de
 codear.
 
 
@@ -229,28 +329,36 @@ del sitio podrá robarse los hashes pero no los passwords. Es una forma
 de reducir el daño.
 
 > Por qué es importante evitar el robo de passwords? Porque los humanos
-> tienden a *reusar sus passwords*. Los atacantes suelen apuntar a sitios
+> tienden a *reusar sus passwords*.
+>
+> Los atacantes apuntan a sitios
 > web pocos seguros (digamos alguna plataforma de e-commerce) con el fin
 > de conseguir estos passwords y, con algo de suerte, comprometer
-> cuentas de otros sitios como Google o Facebook. 😈
+> cuentas de otros sitios como Google, Facebook o Netflix. 😈
 
-*Crackear un password* es encontrar el password dado su hash.
+Debería ser una tarea imposible obtener un password a partir de un
+hash^[Asumiendo que la función de hash es criptográficamente segura,
+*lenta* y se usa salt.]
+pero los hashes **no** garantizan protección absoluta e incondicional.
 
-Debería ser una tarea imposible probar todas las posibles contraseñas
-que pudiesen existir pero el humano tiende a utilizar passwords simples
-y *comunes* con solo [algunas
-variantes](https://wpengine.com/resources/passwords-unmasked-infographic/).
+El humano tiende a utilizar
+passwords simples y *comunes* con solo [algunas
+variantes](https://wpengine.com/resources/passwords-unmasked-infographic/):
+*"admin"*, *"admin123"* y *"admin123!"* son solo variantes de la misma palabra
+*"admin"*.
 
-Por ejemplo *"admin"*, *"admin123"* y *"admin123!"* son los passwords
-más comunes en donde los tres son variantes de una misma palabra,
-"*admin"*.
+Basta entonces tomar algún *diccionario*, generar a partir de él
+variantes de cada palabra y computar su hash. Si coincide con alguno de
+los hashes robados, bingo!, ya sabés cual era el password del usuario.
 
-Generar las posibles variantes de un password es conocido como *word
-mangling*.
+A esto se lo conoce como **password cracking** por
+diccionario y a la generación de variantes como *word mangling*.
 
-Es una excusa perfecta para jugar con `std::string`: escribir un
-programa `wm` que tome una lista de passwords (conocido como diccionario) y
-que genere todas las variantes posibles de cada password generadas
+Es una excusa perfecta para jugar con `std::string`.
+
+Escribir un
+programa `wm` que tome un diccionario y
+que genere todas las variantes posibles de cada palabra
 a partir de una serie de *reglas de mutación* dadas por archivo.
 
 Reglas posibles:
@@ -320,6 +428,8 @@ crackear este password con [Hashcat](https://hashcat.net/):
 ```
 8ff94d5b6241bc49c8831d0a669b0a8f
 ```
+
+Suerte!
 
 <x-img src="!path images/xkcd/password_strength_936.png">
 Algo para pensar cuando elijas un password. Créditos por la imagen
