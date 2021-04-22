@@ -1,6 +1,6 @@
 # Endianness
 
-Cual de estos dos números es más grande? No hay trampas, estoy hablando
+Cuál de estos dos números es más grande? No hay trampas, estoy hablando
 dos números comunes y corrientes como si fueran los precios de un
 supermercado:
 
@@ -19,7 +19,7 @@ al revés. Es una cuestión *puramente notacional*.
 La convención dice que el **digito** más a la izquierda es el **más
 significativo**, el que pesa más.
 
-Por eso, `1 < 10 < 100 < 1000` por que cuanto más a la izquierda se
+Por eso, `1 < 10 < 100 < 1000` porque cuanto más a la izquierda se
 esté, más grande es el número.
 
 Y por eso `2491` es mayor que `1942`.
@@ -63,13 +63,13 @@ char mem[] = { ...., 0x78, 0x56, 0x34, 0x12, ..... }; // little endian
 
 El hecho es que **depende de la arquitectura!**
 
-En ciertas arquitecturas el byte **más significativo** esta a la izquierda,
-esta en las posiciones **más bajas** de la memoria.
+En ciertas arquitecturas el byte **más significativo** está a la izquierda,
+en las posiciones **más bajas** de la memoria.
 
-Estas son las arquitecturas **big endian**.
+Son las arquitecturas **big endian**.
 
 Por el otro lado están aquellas que ponen el byte **más significativo** a la
-derecha, en las posiciones **más altas** de la memoria. Las arquitecturas
+derecha, en las posiciones **más altas** de la memoria. Son las arquitecturas
 **little endian**.
 
 Regla mnemotécnica: en las arquitecturas big endian el byte más
@@ -85,7 +85,7 @@ En la novela
 [Gulliver's Travels](https://en.wikipedia.org/wiki/Gulliver%27s_Travels)
 había dos países que estaban en guerra por determinar desde que sección
 se debía empezar a abrir un huevo hervido: desde la parte más grande o
-desde la parte más chicas.
+desde la parte más chica.
 
 Big o little end.
 
@@ -98,7 +98,7 @@ Create una función `get_endianness()` que te indique si la máquina es
 big o little endian.
 
 Tip: si ves al número `int32_t n = 42` como un buffer de 4 bytes. Qué
-valor debería tener el primer byte en una máquina big endian? y en una
+valor debería tener el primer byte en una máquina big endian? Y en una
 little endian?
 
 
@@ -139,8 +139,8 @@ int main() {
 }
 ```
 
-Si miras el archivo `cookie` con `hexdump` veras los 4 bytes y
-*dependiendo del endianness de tu máquina* veras un orden u otro.
+Si miras el archivo `cookie` con `hexdump` verás los 4 bytes y
+*dependiendo del endianness de tu máquina* verás un orden u otro.
 
 Al igual que yo, es probable que tengas un micro little endian
 y veas esto:
@@ -168,7 +168,7 @@ de la *otra* máquina!
 
 ##### [ej:]
 
-Un programa *vulnerable* lee 4 bytes de la red y *sin tomar el cuenta el
+Un programa *vulnerable* lee 4 bytes de la red y *sin tomar en cuenta el
 endianness*, ve a esos bytes con un `uint32_t` y reserva memoria con un
 `malloc`.
 
@@ -178,7 +178,7 @@ void *mem = malloc(sz);
 ```
 
 Si el programa corre en una máquina *big endian*, qué número debería
-enviar un atacante para que el programa victima reserve más de 1 GB ?
+enviar un atacante para que el programa víctima reserve más de 1 GB ?
 
 > Ups
 
@@ -200,10 +200,10 @@ Es una regla *simétrica* en la que ambos participantes tendrán que
 convertir hacia y desde el endianness elegido.
 
 La mayoría de los protocolos de red binarios escriben los
-números en big endian. Fue una decision arbitraria y muchos protocolos
+números en big endian. Fue una decisión arbitraria y muchos protocolos
 nuevos siguen con la tradición.
 
-Tal es así que en la jerga a big endian se lo conoce como el
+Tan es así que en la jerga a big endian se lo conoce como el
 *endianness de la red* o *network order*.
 
 Pero hoy en día la mayoría de los dispositivos son little endian lo que
@@ -216,10 +216,10 @@ little endian directamente.
 
 
 La otra forma es **no** definir un endianness a priori y dejar que el
-escritor escriba o envie por red en **su** endianness, el *endianness
+escritor escriba o envíe por red en **su** endianness, el *endianness
 nativo*.
 
-Para que el lector sepa en que endianness están los datos, el escritor
+Para que el lector sepa en qué endianness están los datos, el escritor
 debe escribir o enviar un número *mágico* conocido por ambos,
 digamos `0x12345678`.
 
@@ -237,12 +237,12 @@ otro hace la conversión.
 
 Los archivos [pcap](https://wiki.wireshark.org/Development/LibpcapFileFormat)
 son un ejemplo: en los primeros 4 bytes se guarda el número mágico
-`0xa1b2c3d4` para que el lector pueda saber en que endianness esta y
+`0xa1b2c3d4` para que el lector pueda saber en qué endianness esta y
 sepa si debe o no hacer las conversiones.
 
 ### Conversión de endianness
 
-Una vez que sabes en que endianness tenes que escribir o leer unos
+Una vez que sabes en qué endianness tenés que escribir o leer unos
 datos, hay una serie de funciones listas para ayudarte.
 
 No son parte de la librería estándar de C/C++ pero son parte del
@@ -259,11 +259,11 @@ opera sobre enteros de 4 bytes.
 
 Leete la [man page byteorder(3)](https://linux.die.net/man/3/byteorder).
 
-Como veras estas funciones sólo trabajan con big endian pero
+Como verás estas funciones sólo trabajan con big endian pero
 hay otra familia de funciones mucho más rica, solo que **no** son
-standard:
+estándar:
 
- - `htobe16`: *host to big endian - 16 bits*, función q toma un entero
+ - `htobe16`: *host to big endian - 16 bits*, función que toma un entero
 de 2 bytes en el endianness nativo y lo convierte a *big endian*. Es el
 equivalente de `htons`.
  - `le16toh`: *little endian to host - 16 bits*, convierte de little
@@ -296,7 +296,7 @@ No es
 ni big ni little endian, es un *mixed endian*. En particular, es el
 endianness de las viejas [PDP-11](https://en.wikipedia.org/wiki/PDP-11).
 
-Extende `get_endianness()` para detectar este caso también. Armate una
+Extendé `get_endianness()` para detectar este caso también. Armate una
 serie de funciones que te conviertan del endianness nativo al mixed
 endian números de 2, 4 y 8 bytes y viceversa:
 
