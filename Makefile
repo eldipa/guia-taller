@@ -13,15 +13,19 @@ all:
 	echo ":("
 	exit 1
 
+# Docker image used to build the PDFs. Based on Foliant (python)
+# docker.
 build-docker:
 	sudo docker build -t ${DOCKERIMG} .
 
+# Make targets: PDF or LaTex files
 pdf: _foliant_conf preprocess
 	${DOCKERRUN} -u user ${DOCKERIMG} make _pdf
 
 tex: _foliant_conf preprocess
 	${DOCKERRUN} -u user ${DOCKERIMG} make _tex
 
+# Run an interactive shell of the docker image to play with it
 shell: _foliant_conf
 	${DOCKERRUN} -it ${DOCKERIMG} bash
 
