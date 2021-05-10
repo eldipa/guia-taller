@@ -116,9 +116,9 @@ Cuáles y por qué?
 char dst[10];
 char src[1000];
 
-strncpy(dst, src, sizeof(src));
+strncpy(dst, src, sizeof(src)-1);
 strncpy(dst, src, strlen(dst));
-strncpy(dst, src, sizeof(dst));
+strncpy(dst, src, sizeof(dst)-1);
 strncpy(dst, src, strlen(src));
 ```
 
