@@ -64,6 +64,10 @@ Caption text here.
 Caption text here.
 </x-img>
 
+#### Footnotes
+
+Foo bar^[Asumiendo que la función de hash *bla bla bla*.]
+
 #### Exercises and Projects
 
 Exercises headers **must** be replaced by a `Ej C.N:` where `C` is the

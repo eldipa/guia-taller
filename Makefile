@@ -25,6 +25,12 @@ pdf: _foliant_conf preprocess
 tex: _foliant_conf preprocess
 	${DOCKERRUN} -u user ${DOCKERIMG} make _tex
 
+# Make a PDF and then strip off the first page
+# Use this to generate a PDF for a single chapter without the title page
+headless: pdf
+	rm -f *-pdfjam.pdf
+	pdfjam Current.pdf 2-
+
 # Run an interactive shell of the docker image to play with it
 shell: _foliant_conf
 	${DOCKERRUN} -it ${DOCKERIMG} bash
