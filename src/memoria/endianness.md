@@ -1,7 +1,7 @@
 # Endianness
 
 Cuál de estos dos números es más grande? No hay trampas, estoy hablando
-dos números comunes y corrientes como si fueran los precios de un
+dos números comunes y corrientes como si fueran los precios en un
 supermercado:
 
 ```cpp
@@ -11,16 +11,16 @@ b = 2491
 
 Seguro estarás diciendo, `a < b`, el número más grande es 2491.
 
-> Obvio
+> *Obvio.*
 
 Pero por qué? Tanto `a` como `b` son el mismo número solo que uno esta
-al revés. Es una cuestión *puramente notacional*.
+al revés. Es una cuestión *pura de notación*.
 
 La convención dice que el **digito** más a la izquierda es el **más
 significativo**, el que pesa más.
 
 Por eso, `1 < 10 < 100 < 1000` porque cuanto más a la izquierda se
-esté, más grande es el número.
+esté el `1`, más grande es el número.
 
 Y por eso `2491` es mayor que `1942`.
 
@@ -66,28 +66,29 @@ El hecho es que **depende de la arquitectura!**
 En ciertas arquitecturas el byte **más significativo** está a la izquierda,
 en las posiciones **más bajas** de la memoria.
 
-Son las arquitecturas **big endian**.
+Son las llamadas arquitecturas **big endian**.
 
 Por el otro lado están aquellas que ponen el byte **más significativo** a la
 derecha, en las posiciones **más altas** de la memoria. Son las arquitecturas
 **little endian**.
 
-Regla mnemotécnica: en las arquitecturas big endian el byte más
-significativo esta al principio de la memoria, el byte **más grande**
-esta al principio.
+O lo que es lo mismo, ponen el byte **menos significativo** al
+principio.
 
-Por el otro lado, en little endian el byte **menos** significativo, el
-**más chico** esta al principio.
+De acá podemos sacar una regla mnemotécnica: en las arquitecturas **big**
+endian el primer byte es el más **grande** (más significativo), en las arquitecturas
+**little** endian el primer byte es el más **chico** (menos significativo).
 
-No es casualidad.
+Y no es casualidad.
 
-En la novela
+Ambos términos vienen de la novela
 [Gulliver's Travels](https://en.wikipedia.org/wiki/Gulliver%27s_Travels)
-había dos países que estaban en guerra por determinar desde que sección
+en donde había dos países que estaban en guerra por determinar
+desde que sección
 se debía empezar a abrir un huevo hervido: desde la parte más grande o
 desde la parte más chica.
 
-Big o little end.
+*Big o little end.*
 
 
 #### Ejercicios
@@ -97,9 +98,9 @@ Big o little end.
 Create una función `get_endianness()` que te indique si la máquina es
 big o little endian.
 
-Tip: si ves al número `int32_t n = 42` como un buffer de 4 bytes. Qué
-valor debería tener el primer byte en una máquina big endian? Y en una
-little endian?
+Tip: si al número `int32_t n = 42` lo casteas a `char*`, qué
+valor debería tener el primer byte apuntado por `char*` en una máquina
+big endian? Y en una little endian?
 
 
 ##### [ej:]
@@ -152,9 +153,6 @@ $ hexdump -C endianness
 ```
 
 Y esto puede ser un problema...
-
-*Si guardas un `uint32_t` en un archivo, no guardas un
-entero sino que guardas 4 bytes.*
 
 Si compartís el archivo binario y este se abre en una máquina con
 el endianness incorrecto, se cargará **cualquier cosa**.
@@ -210,7 +208,7 @@ Pero hoy en día la mayoría de los dispositivos son little endian lo que
 fuerza tanto al que envía como al que recibe a convertir de un endianness
 a otro.
 
-Nuevos formatos como [Cap'n proto](https://capnproto.org/) y protocolos como
+Nuevos formatos como [Cap'n Proto](https://capnproto.org/) y protocolos como
 [QUIC](https://en.wikipedia.org/wiki/QUIC) toman ventaja y están en
 little endian directamente.
 
@@ -235,11 +233,6 @@ endianness.
 Es una regla *asimétrica* en donde uno usa **su** endianness nativo y el
 otro hace la conversión.
 
-Los archivos [pcap](https://wiki.wireshark.org/Development/LibpcapFileFormat)
-son un ejemplo: en los primeros 4 bytes se guarda el número mágico
-`0xa1b2c3d4` para que el lector pueda saber en qué endianness esta y
-sepa si debe o no hacer las conversiones.
-
 ### Conversión de endianness
 
 Una vez que sabes en qué endianness tenés que escribir o leer unos
@@ -259,8 +252,12 @@ opera sobre enteros de 4 bytes.
 
 Leete la [man page byteorder(3)](https://linux.die.net/man/3/byteorder).
 
-Como verás estas funciones sólo trabajan con big endian pero
-hay otra familia de funciones mucho más rica, solo que **no** son
+Estas funciones nacieron en el contexto de las redes TCP/IP y como verás
+sólo trabajan con el endianness de la red^[En realidad la red
+no tiene endianness, lo correcto sería decir *"el endianness tradicional
+de los protocolos de red".*]: big endian
+
+Hay otra familia de funciones mucho más rica, solo que **no** son
 estándar:
 
  - `htobe16`: *host to big endian - 16 bits*, función que toma un entero
@@ -273,10 +270,33 @@ endianness nativo un número de 8 bytes.
 
 Y hay más. Revisá la [man page endian(3)](https://linux.die.net/man/3/endian).
 
-Para leer:
- - [Writing endian-independent code in C](https://developer.ibm.com/articles/au-endianc/)
-
 #### Ejercicios
+
+##### [ej:]
+
+Los archivos [pcap](https://wiki.wireshark.org/Development/LibpcapFileFormat)
+son un ejemplo de la regla *asimétrica*: en los primeros 4 bytes se
+guarda el número mágico `0xa1b2c3d4` en el endianness nativo del escritor.
+
+Será tarea del lector saber si dicho endianness coincide con el suyo
+y si deba o no hacer las conversiones.
+
+Y será tarea tuya también!
+
+Create un programa que determine si un archivo
+[pcap](https://wiki.wireshark.org/Development/LibpcapFileFormat) está o
+no en el endianness de **tu** máquina.
+
+Deberías hacer algo así:
+
+```shell
+$ ./pcap_endianness some-pcap-downloaded-from-internet.pcap
+The file is in little-endian, the same endianness of the host.
+No conversion will be needed.
+```
+
+Tip: no es necesario que parsees todo el archivo.
+
 
 ##### [ej:]
 
@@ -304,19 +324,27 @@ endian números de 2, 4 y 8 bytes y viceversa:
 `uint64_t htome64(uint64_t)`, `uint16_t me16toh(uint16_t)`,
 `uint32_t me32toh(uint32_t)`, `uint64_t me64toh(uint64_t)`
 
-
 ##### [ej:]
 
-Create un programa que determine si un archivo
-[pcap](https://wiki.wireshark.org/Development/LibpcapFileFormat) está o
-no en el endianness de la máquina.
+*Crazy idea:* reimplementate el siguiente `bubble_sort`
+usando `htobe16` o `htole16` en reemplazo del swap.
 
-```shell
-$ ./pcap_endianness some-pcap-downloaded-from-internet.pcap
-The file is in little-endian, the same endianness of the host.
-No conversion will be needed.
+```cpp
+void bubble_sort(char* buf, size_t sz) {
+    for (size_t i = 1; i < sz; ++i) {
+        for (size_t j = 0; j < sz - i; ++j) {
+            if (buf[j] > buf[j+1]) {
+                // swap(buf[j], buf[j+1])
+            }
+        }
+    }
+}
 ```
 
-Tip: no es necesario que parsees todo el archivo.
+Tip: pensá bien que función tenés que usar según el endianness de la
+máquina para resolver **este** ejercicio.
 
+#### Lecturas adicionales
+
+ - [Writing endian-independent code in C](https://developer.ibm.com/articles/au-endianc/)
 
