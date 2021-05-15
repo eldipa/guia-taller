@@ -30,6 +30,7 @@ tex: _foliant_conf preprocess
 headless: pdf
 	rm -f *-pdfjam.pdf
 	pdfjam Current.pdf 2-
+	evince Current-2--pdfjam.pdf &
 
 # Run an interactive shell of the docker image to play with it
 shell: _foliant_conf
