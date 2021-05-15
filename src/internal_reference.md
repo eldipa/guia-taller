@@ -55,12 +55,12 @@ Include an image with a caption (optional). The caption **must not**
 have an hyperlink (it does not work).
 
 ```
-<x-img~~ src="!path images/xkcd/password_strength_936.png">
+<x-img~~ src="!path images/xkcd/password_strength_936.png" ref-label="humanlabel-for-referencing">
 Caption text here.
 </x-img~~>
 ```
 
-<x-img src="!path images/xkcd/password_strength_936.png">
+<x-img src="!path images/xkcd/password_strength_936.png" ref-label="humanlabel-for-referencing">
 Caption text here.
 </x-img>
 
@@ -101,3 +101,13 @@ mandatory ...
 Space       ^      ^ must NOT be a space
 mandatory  -|
 ```
+
+#### Citations
+
+Caso de citar a "item1": [see @item1 p. 34-35].
+
+Caso de citar a "item2 y 3": [@item2 p. 30; see also @item3].
+
+Cross-reference of figures ("humanlabel-for-referencing" in this case): [@fig:humanlabel-for-referencing]
+
+#### Stuff

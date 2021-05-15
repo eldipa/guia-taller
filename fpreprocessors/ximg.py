@@ -17,8 +17,13 @@ class Preprocessor(BasePreprocessor):
 
         caption = body
         img_path = options['src']
+        figure_label = options.get('ref-label')
 
         img_ref = f'![{caption}]({img_path})'
+
+        if figure_label:
+            fig_ref = '{#fig:' + figure_label + '}'
+            img_ref += fig_ref
 
         return img_ref
 
