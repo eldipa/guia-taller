@@ -10,6 +10,13 @@ backend_config:
             include_in_header: !path make_helpers/header.tex
             standalone: true
 
+            # enable the use of citations (a Pandoc re-implementation of
+            # pandoc-citeproc filter)
+            # 'bibliography' points to the file where all the
+            # bibliography is defined.
+            citeproc: true
+            bibliography: !path biblio.bib
+
             #metadata: crossrefYaml= !path make_helpers/pandoc-crossref-es.yaml
             #lua_filter: !path make_helpers/pandoc_list2table_filter.lua
         vars:
