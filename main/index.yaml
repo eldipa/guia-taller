@@ -1,0 +1,7 @@
+src_dir: out/each/md/
+files_to_include:
+ - memoria-endianness.md
+ - memoria-layout.md
+ - strings-main.md
+ - sockets-main.md
+ - files-sort-inplace.md

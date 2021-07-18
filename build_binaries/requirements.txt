@@ -1,3 +1,0 @@
-# Library to build Pandoc filters from Python
-# Panflute 2.0.5 is compatible with Pandoc 2.11
-panflute==2.0.5

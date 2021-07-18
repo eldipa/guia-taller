@@ -1,0 +1,44 @@
+
+{#
+    on_columns() macro will take the caller's content,
+    will split it into parts (separated by the given
+    separator) and it will render each part in its own
+    column next each other; top-aligned.
+
+    Usage:
+
+    {% call(separator) on_columns() %}
+    This is the content on the left-most column
+    {{ separator }}
+    This is the content of the next column
+    {{ separator }}
+    And so on...
+    {% endcall %}
+
+    Currently the width of each column is *fixed* so
+    only *two* columns are possible. In a future we may
+    support arbitrary widths and/or more than two columns.
+
+    So currently it makes sense to call {{ separator }}
+    only *once* (to have only *two* columns)
+
+#}
+{% macro on_columns() -%}
+{% set separator = ("-" * 24) + " >8 " + ("-" * 24) %}
+{% set parts = caller(separator).split(separator) %}
+```{=latex}
+\noindent\begin{minipage}[t]{.45\textwidth}
+```
+{% for part in parts[:-1] %}
+{{ part }}
+```{=latex}
+\end{minipage}\hfill
+\begin{minipage}[t]{.45\textwidth}
+```
+{% endfor %}
+{{ parts[-1] }}
+```{=latex}
+\end{minipage}
+```
+{%- endmacro %}
+

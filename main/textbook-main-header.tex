@@ -1,0 +1,79 @@
+% Define a counter named 'exercisecounter' to track the exercise.
+% The counter will be reset to zero each time the 'chapter' counter
+% is incremented (when a new chapter is created for example).
+% See pandoc_filter.py3
+% The same for 'projectcounter' to track projects.
+\newcounter{exercisecounter}[chapter]
+\newcounter{projectcounter}[chapter]
+
+\usepackage{graphicx}
+\usepackage{wrapfig}
+
+% Map Unicode emojis to PDF images. Based on coloremoji.sty
+% See https://github.com/alecjacobson/coloremoji.sty
+\usepackage{newunicodechar}
+\newunicodechar{😈}{\text{\raisebox{-0.2em}{\includegraphics[height=1em]{img/emoji/evil.pdf}}}}
+\newunicodechar{💣}{\text{\raisebox{-0.2em}{\includegraphics[height=1em]{img/emoji/bomb.pdf}}}}
+\newunicodechar{⚠}{\text{\raisebox{-0.2em}{\includegraphics[height=1em]{img/emoji/alert.pdf}}}}
+
+
+% Disabled because it enters in conflict with tikz
+% The error says:
+%
+%   ! Argument of \language@active@arg> has an extra }.
+%   <inserted text>
+%                   \par
+%   l.86 ...in{tikzpicture}[>=latex',line join=bevel,]
+%\usepackage[spanish]{babel}
+
+\usepackage{draftwatermark}
+\SetWatermarkColor[gray]{0.96}
+
+% call \chapterauthor{aaa} *after* each chapter begin to name the author
+% of it
+\makeatletter
+\newcommand{\chapterauthor}[1]{%
+  {\parindent0pt\vspace*{-25pt}%
+  \linespread{1.1}\large\scshape#1%
+  \par\nobreak\vspace*{35pt}}
+  \@afterheading%
+}
+\makeatother
+
+\title{Guía de Taller}
+\author{Martín Di Paola}
+
+\hypersetup{
+            pdftitle={Guía de Taller},
+            pdfauthor={Martín Di Paola},
+            pdfborder={0 0 0},
+            breaklinks=true}
+
+\newfontfamily\monacofont[Path=./fonts/]{monaco.ttf}
+
+% Define some colors
+\usepackage{xcolor}
+\definecolor{darkgreen}{rgb}{0,.5,0}
+\definecolor{darkblue}{rgb}{0,0,.7}
+
+% Define some styles for the highlighting with 'listings'
+\lstdefinestyle{normal}{                    %
+   numbers=none,                            % enumerar las lineas
+   showstringspaces=false,                  % NOTE: without this xelatex/xdvipdfmx breaks! (i don't know why)
+   keywordstyle=\color{darkblue}\textbf,    % color de las keywords
+   stringstyle=\color{red},                 % color de los strings
+   commentstyle=\color{darkgreen},          % color de los comentarios
+   basicstyle=\color{black}\monacofont,     % color del texto en general
+   morecomment=[l][\color{magenta}]{\#},    % coloreamos las intrucciones del precompilador (todo lo que empieza con #)
+   ndkeywords={NULL,nullptr,noexcept},      % definimos una nuevas keywords como NULL y nullptr
+   ndkeywordstyle=\color{violet},           % y las nuevas keywords tendran este color
+   frame=none,                              % simple, sin ningun marco o frame alrededor del codigo
+   basewidth={0.55em,0.55em}                % tamano de las letras/lineas. usado para reducir el whitespace entre estas
+}
+
+\lstset{style=normal}
+
+% Graph and tree diagrams
+\usepackage{tikz}
+\usetikzlibrary{snakes,arrows,shapes}
+\usepackage{amsmath}

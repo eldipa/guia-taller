@@ -1,0 +1,93 @@
+# Import from the environment the variable INDOCKER.
+# Then, compare it with "1" if it doesn't match stop with
+# a message error.
+# INDOCKER should be set to "1" to signal that we are running Tup
+# in the correct docker so we can be sure that all the commands and
+# scripts here will be run using the tools in the docker container
+import INDOCKER
+ifneq (1,$(INDOCKER))
+error Stop! You must be in the container for developing.
+endif
+
+# Preprocess the first input file (%1f) with Jinja2 and output
+# the resulting file into %1o.
+#
+# The preprocessing takes optionally a second input file (%2f)
+# that it should be a data file (yaml, json) from where Jinja2 will
+# read the variables that may control the preprocessing.
+# If no second input file is given, Jinja2 will use the environment variables.
+!j2md = |> j2 --customize scripts/j2-md.py %1f %2f > %1o |>  | ^scripts/__pycache__/*
+
+# Compile the given input Markdown file (%1f) into a standalone Tex file (%1o)
+# using Pandoc and filtered with Pandoc Filters.
+#
+# Use a custom include-in-headers file.
+# See tex.sh for more info about the parameters
+#
+!tex = |> ./scripts/tex.sh %1f %1o |>
+
+# Compile the given input Tex file (%1f) into a PDF with LatexMK (xelatex)
+# The output-directory is set by the second argument of pdf.sh (passed
+# not here)
+!pdf = |> ./scripts/pdf.sh %1f  |>
+
+
+
+# Preprocess all the Markdown files in each/ and drafts/ with Jinja2
+#
+#   each/*.j2.md  -->  out/each/md/*.md
+#   drafts/*.j2.md  -->  out/drafts/md/*.md
+#
+# NOTE: the following *requires* that there are not subfolder
+# inside each/ and drafts/
+# This is because we use %g and not %B in the output filename
+: foreach each/*.j2.md |> !j2md |> out/each/md/%g.md
+: foreach drafts/*.j2.md |> !j2md |> out/drafts/md/%g.md
+
+# Compile each Markdown file into a separated Tex file with Pandoc
+# as an independent "standalone" Tex file.
+#
+#   out/each/md/*.md  -->  out/each/tex/*.tex
+#   out/drafts/md/*.md  -->  out/drafts/tex/*.tex
+#
+: foreach out/each/md/*.md |> !tex  |> out/each/tex/%B.tex
+: foreach out/drafts/md/*.md |> !tex  |> out/drafts/tex/%B.tex
+
+# Compile each standalone Tex file into a separated PDF file with LatexMK
+#
+#   out/each/tex/*.tex  -->  out/each/pdf/*.pdf
+#   out/drafts/tex/*.tex  -->  out/drafts/pdf/*.pdf
+#
+: foreach out/each/tex/*.tex |> !pdf out/each/pdf/  |> out/each/pdf/%B.pdf out/each/pdf/%B.aux out/each/pdf/%B.fdb_latexmk out/each/pdf/%B.fls out/each/pdf/%B.log out/each/pdf/%B.xdv out/each/pdf/%B.console_log   out/each/pdf/%B.bcf out/each/pdf/%B.run.xml out/each/pdf/%B.blg out/each/pdf/%B.bbl
+: foreach out/drafts/tex/*.tex |> !pdf out/drafts/pdf/  |> out/drafts/pdf/%B.pdf out/drafts/pdf/%B.aux out/drafts/pdf/%B.fdb_latexmk out/drafts/pdf/%B.fls out/drafts/pdf/%B.log out/drafts/pdf/%B.xdv  out/drafts/pdf/%B.console_log  out/drafts/pdf/%B.bcf  out/drafts/pdf/%B.run.xml  out/drafts/pdf/%B.blg  out/drafts/pdf/%B.bbl
+
+
+# Ensamble the Markdown files into a single "main" Markdown with Jinja2
+# but don't include the 'drafts'
+#
+#   out/each/md/*.md  -->  out/main/md/textbook-main.md
+#
+: main/textbook-main.j2.md main/index.yaml out/each/md/*.md |> !j2md |> out/main/md/textbook-main.md
+
+# Compile the "ensambled" Markdown file into the final Tex file with Pandoc
+# as a "standalone" file. Then, compile it into a PDF with LatexMK
+#
+#   out/main/md/textbook-main.md   -->  out/main/tex/textbook-main.tex
+#   out/main/tex/textbook-main.tex  -->  out/main/pdf/textbook-main.pdf
+#
+: out/main/md/textbook-main.md  |> !tex   |> out/main/tex/%1B.tex ^out/filter_trace.log
+: out/main/tex/textbook-main.tex |> !pdf out/main/pdf/  |> out/main/pdf/%B.pdf out/main/pdf/%B.aux out/main/pdf/%B.fdb_latexmk out/main/pdf/%B.fls out/main/pdf/%B.log out/main/pdf/%B.xdv  out/main/pdf/%B.console_log  out/main/pdf/%B.bcf  out/main/pdf/%B.run.xml  out/main/pdf/%B.blg  out/main/pdf/%B.bbl
+
+
+#: |> scripts/build-latex-env.sh |>
+
+# TUP cheatsheet
+# ===============
+#
+# %f represents the input file name;
+# %o the output file name;
+# %B the basename of the input (no extension, no directory)
+# %g the matched glob of a foreach
+
+
+

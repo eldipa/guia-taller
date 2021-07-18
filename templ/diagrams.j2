@@ -1,0 +1,23 @@
+
+{#
+    graphviz() macro will take the caller's content, which
+    it is expected to be a graph in 'dot' notation wrapped in a
+    fenced-code block, and it will return Latex code that draws
+    the graph using Tikz.
+
+    Example:
+
+        {% call graphviz() %}
+        ```dot
+        digraph G {
+            a_1-> a_2 -> a_3 -> a_1;
+        }
+        ```
+        {% endcall %}
+
+#}
+{% macro graphviz(format='tikz', prog='dot', texmode='math', straightedges=False, autosize=True, codeonly=False) -%}
+{{ diagram_graphviz(caller(), format=format, prog=prog, texmode=texmode, straightedges=straightedges, autosize=autosize, codeonly=codeonly) }}
+{%- endmacro %}
+
+
