@@ -155,6 +155,39 @@ def figure_fig(ctx, path, position='here', caption='', captionpos='bottom',
 
     return as_markup_latex(fig_env_tex)
 
+@jinja2.contextfunction
+def include_block(ctx, name, block, strip=True, indent=0, ctx_env={}):
+    ''' Function to open and read the given file (<name>), see it
+        as a Jinja template, get the named block (<block>) and
+        evaluate it with the given context <ctx_env>.
+
+        Then return it as is.
+
+        Example:
+
+            {{ include_block(src_dir + "/" + fname, "header") }}
+    '''
+    env = ctx.environment
+
+    # Get the template
+    template = env.get_template(name)
+
+    # Get the named block from the template
+    block = template.blocks[block]
+
+    content = jinja2.utils.concat(block(ctx))
+    if strip or indent:
+        lines = content.split('\n')
+        if strip:
+            lines = (l.strip() for l in lines)
+
+        if indent:
+            indent = ' ' * indent
+            lines = (indent + l for l in lines)
+
+        content = '\n'.join(lines)
+
+    return jinja2.Markup(content)
 
 # DO NOT RENAME THIS FUNCTION (required by j2cli)
 def j2_environment_params():
@@ -172,6 +205,7 @@ def j2_environment(env):
     env.globals['proj'] = project_marker
     env.globals['diagram_graphviz'] = diagram_graphviz
     env.globals['figure_fig'] = figure_fig
+    env.globals['include_block'] = include_block
 
 # DO NOT RENAME THIS FUNCTION (required by j2cli)
 def extra_tests():
