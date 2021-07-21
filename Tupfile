@@ -58,8 +58,8 @@ endif
 #   out/each/tex/*.tex  -->  out/each/pdf/*.pdf
 #   out/drafts/tex/*.tex  -->  out/drafts/pdf/*.pdf
 #
-: foreach out/each/tex/*.tex |> !pdf out/each/pdf/  |> out/each/pdf/%B.pdf out/each/pdf/%B.aux out/each/pdf/%B.fdb_latexmk out/each/pdf/%B.fls out/each/pdf/%B.log out/each/pdf/%B.xdv out/each/pdf/%B.console_log   out/each/pdf/%B.bcf out/each/pdf/%B.run.xml out/each/pdf/%B.blg out/each/pdf/%B.bbl
-: foreach out/drafts/tex/*.tex |> !pdf out/drafts/pdf/  |> out/drafts/pdf/%B.pdf out/drafts/pdf/%B.aux out/drafts/pdf/%B.fdb_latexmk out/drafts/pdf/%B.fls out/drafts/pdf/%B.log out/drafts/pdf/%B.xdv  out/drafts/pdf/%B.console_log  out/drafts/pdf/%B.bcf  out/drafts/pdf/%B.run.xml  out/drafts/pdf/%B.blg  out/drafts/pdf/%B.bbl
+: foreach out/each/tex/*.tex |> !pdf out/each/pdf/  |> out/each/pdf/%B.pdf out/each/pdf/%B.aux out/each/pdf/%B.fdb_latexmk out/each/pdf/%B.fls out/each/pdf/%B.log out/each/pdf/%B.xdv out/each/pdf/%B.console_log   out/each/pdf/%B.bcf out/each/pdf/%B.run.xml out/each/pdf/%B.blg out/each/pdf/%B.bbl out/each/pdf/%B.snippets out/each/pdf/%B.pygmented
+: foreach out/drafts/tex/*.tex |> !pdf out/drafts/pdf/  |> out/drafts/pdf/%B.pdf out/drafts/pdf/%B.aux out/drafts/pdf/%B.fdb_latexmk out/drafts/pdf/%B.fls out/drafts/pdf/%B.log out/drafts/pdf/%B.xdv  out/drafts/pdf/%B.console_log  out/drafts/pdf/%B.bcf  out/drafts/pdf/%B.run.xml  out/drafts/pdf/%B.blg  out/drafts/pdf/%B.bbl out/drafts/pdf/%B.snippets out/drafts/pdf/%B.pygmented
 
 
 # Ensamble the Markdown files into a single "main" Markdown with Jinja2
@@ -76,7 +76,7 @@ endif
 #   out/main/tex/textbook-main.tex  -->  out/main/pdf/textbook-main.pdf
 #
 : out/main/md/textbook-main.md  |> !tex   |> out/main/tex/%1B.tex ^out/filter_trace.log
-: out/main/tex/textbook-main.tex |> !pdf out/main/pdf/  |> out/main/pdf/%B.pdf out/main/pdf/%B.aux out/main/pdf/%B.fdb_latexmk out/main/pdf/%B.fls out/main/pdf/%B.log out/main/pdf/%B.xdv  out/main/pdf/%B.console_log  out/main/pdf/%B.bcf  out/main/pdf/%B.run.xml  out/main/pdf/%B.blg  out/main/pdf/%B.bbl
+: out/main/tex/textbook-main.tex |> !pdf out/main/pdf/  |> out/main/pdf/%B.pdf out/main/pdf/%B.aux out/main/pdf/%B.fdb_latexmk out/main/pdf/%B.fls out/main/pdf/%B.log out/main/pdf/%B.xdv  out/main/pdf/%B.console_log  out/main/pdf/%B.bcf  out/main/pdf/%B.run.xml  out/main/pdf/%B.blg  out/main/pdf/%B.bbl out/main/pdf/%B.snippets out/main/pdf/%B.pygmented
 
 
 #: |> scripts/build-latex-env.sh |>
