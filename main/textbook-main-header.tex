@@ -108,5 +108,19 @@
 
 \usepackage{fancyvrb}
 \usepackage{tcolorbox}
+\tcbuselibrary{breakable}
+\tcbuselibrary{skins}
 \usepackage{pygmentex}
-\setpygmented{font=\monacofont,boxing method=tcolorbox,inline method=tcbox}
+\setpygmented{font=\monacofont\small,boxing method=tcolorbox,inline method=tcbox}
+
+% https://tex.stackexchange.com/questions/128636/center-hrule-in-the-middle-of-the-page
+\newcommand{\SectionBreak}{%
+    \vskip 1ex
+    \nointerlineskip
+    \moveright 0.125\textwidth \vbox{\hrule width0.75\textwidth}
+    \nointerlineskip
+    \vskip 0.5ex
+    \makeatletter
+        %\@afterindenfalse%
+    \makeatother
+}

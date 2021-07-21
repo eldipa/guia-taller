@@ -134,16 +134,40 @@ def NOT_USED_enumarate_exercises_and_projects(elem, doc):
                 elem,
                 ]
 
+def kwargs_as_latex_options(kwargs):
+    ret = []
+    for key, value in kwargs.items():
+        if isinstance(value, dict):
+            value = kwargs_as_latex_options(value)
+            value = '{' + value + '}'
+        elif value == None or value == '':
+            value = None
+        elif isinstance(value, str):
+            pass
+        else:
+            raise Exception()
+
+        if value is None:
+            ret.append(key)
+        else:
+            ret.append(f'{key}={value}')
+
+    return ', '.join(ret)
+
+
+def str_options_as_dict(s, sep=';'):
+    pass
+
 
 from pygments.lexers import get_lexer_by_name
 
-pygmented_block = r'''\begin{pygmented}[%s]%s%s%s\end{pygmented}'''
+pygmented_block = r'''%s\begin{pygmented}[%s]%s%s%s\end{pygmented}%s'''
 pygmented_inline = r'''\pyginline[%s]%s%s%s'''
 
 def highlight_code_inline_and_blocks_with_pygments(elem, doc):
     if type(elem) in {CodeBlock, Code} and elem.classes:
         lexer = None
-        lang, *attrs = elem.classes[0].split(';')
+        lang, *flags = elem.classes[0].split(';')
         if lang == 'none':
             return # TODO
 
@@ -155,8 +179,34 @@ def highlight_code_inline_and_blocks_with_pygments(elem, doc):
         if not lexer:
             return
 
-        attrs.append(f'lang={lang}')
-        attrs = ', '.join(attrs)
+        options = {
+            'lang': lang,
+            'boxrule': '0pt',
+            'frame empty': None,
+            'opacityback': '0',
+            'opacityframe': '0',
+            'halign': 'left',
+            'valign': 'top',
+            'size': 'minimal',
+            'sty': 'candombe',
+            }
+
+        flags = set(filter(None, flags))
+        if 'frameleft' in flags:
+            flags.discard('frameleft')
+            options.pop('frame empty')
+            options.update({
+                'frame hidden': None,
+                'enhanced': None,
+                'opacityframe': '1',
+                'boxrule': '2px',
+                'colframe': 'black',
+                'borderline west': '{0.5pt}{-1.5pt}{black}'
+                })
+
+        attrs = ', ' + kwargs_as_latex_options(options)
+        if flags:
+            attrs += ', ' + ', '.join(flags)
 
         code = elem.text
 
@@ -172,7 +222,9 @@ def highlight_code_inline_and_blocks_with_pygments(elem, doc):
             text = pygmented_inline % (attrs, delim, code, delim)
             return RawInline(text=text, format='tex')
         elif type(elem) == CodeBlock:
-            text = pygmented_block % (attrs, '\n', code, '\n')
+            pre = r'\disablehyphenation' + '\n'
+            pos = '\n' + r'\enablehyphenation'
+            text = pygmented_block % (pre, attrs, '\n', code, '\n', pos)
             return RawBlock(text=text, format='tex')
         else:
             assert False
