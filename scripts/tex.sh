@@ -33,7 +33,7 @@ fi
 #run_in_docker \
 pandoc \
     --standalone \
-    --from=markdown \
+    --from=markdown+tex_math_single_backslash \
     --to=latex \
     --top-level-division=chapter \
     --number-sections \
