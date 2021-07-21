@@ -64,9 +64,10 @@ Es recien en el segundo y ultimo `mov`{.nasm} que el valor de
 `eax`{.nasm} es guardado en memoria en la variable `counter`.
 
 
+**TODO** : nasm;numbers=left;frame=leftline
 
 {% call(separator) on_columns() %}
-```nasm;numbers=left;frame=leftline
+```nasm;linenos
 mov     eax, DWORD PTR counter[rip]
 add     eax, 1
 - - - - - - - - -
@@ -75,7 +76,7 @@ add     eax, 1
 mov     DWORD PTR counter[rip], eax
 ```
 {{ separator }}
-```nasm;numbers=left;frame=leftline
+```nasm;linenos
 - - - - - - - - -
 - - - - - - - - -
 mov     eax, DWORD PTR counter[rip]
@@ -99,7 +100,7 @@ void inc() {
 ```
 
 {% call(separator) on_columns() %}
-```nasm;numbers=left;frame=leftline
+```nasm;linenos
 set     DWORD PTR mx[rip]
 mov     eax, DWORD PTR counter[rip]
 add     eax, 1
@@ -113,7 +114,7 @@ del     DWORD PTR mx[rip]
 - - - - - - - - -
 ```
 {{ separator }}
-```nasm;numbers=left;frame=leftline
+```nasm;linenos
 - - - - - - - - -
 - - - - - - - - -
 - - - - - - - - -
