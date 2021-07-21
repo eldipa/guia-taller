@@ -125,9 +125,7 @@ This is handled by `filters/magic.py3` and they're passed directly
 to
 [listings](https://es.overleaf.com/learn/latex/Code_listing#Reference_guide)
 
-{# nasm;numbers=left;frame=leftline #}
-
-```nasm
+```nasm;linenos;frameleft
 mov     eax, DWORD PTR counter[rip]
 add     eax, 1
 mov     DWORD PTR counter[rip], eax
@@ -195,8 +193,8 @@ templates should be in `src/` and final files should be in `out/src/`)
 
 Include the whole file
 
-```cpp
-{% include 'out/src/err.h' %}
+```cpp;breakable
+{{ include_block('out/src/err.h', block=None, strip=False) }}
 ```
 
 ## Graphviz
