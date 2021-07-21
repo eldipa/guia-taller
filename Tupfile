@@ -42,7 +42,16 @@ endif
 # inside each/ and drafts/
 # This is because we use %g and not %B in the output filename
 : foreach each/*.j2.md |> !j2md |> out/each/md/%g.md
-: foreach drafts/*.j2.md |> !j2md |> out/drafts/md/%g.md
+: foreach drafts/*.j2.md | <srcgroup> |> !j2md |> out/drafts/md/%g.md
+
+# Preprocess all the source code (C/C++ files) in src/ with Jinja2
+# The <srcgroup> associate the main directory with the output files
+# so they can be a dependency of other rules that are over other
+# directories (Tup requires this to know about dependencies cross
+# multiple directories).
+: foreach src/*.j2.c |> !j2md |> out/src/%g.c <srcgroup>
+: foreach src/*.j2.h |> !j2md |> out/src/%g.h <srcgroup>
+: foreach src/*.j2.cpp |> !j2md |> out/src/%g.cpp <srcgroup>
 
 # Compile each Markdown file into a separated Tex file with Pandoc
 # as an independent "standalone" Tex file.
