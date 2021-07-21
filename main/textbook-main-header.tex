@@ -16,6 +16,36 @@
 \newunicodechar{💣}{\text{\raisebox{-0.2em}{\includegraphics[height=1em]{img/emoji/bomb.pdf}}}}
 \newunicodechar{⚠}{\text{\raisebox{-0.2em}{\includegraphics[height=1em]{img/emoji/alert.pdf}}}}
 
+% Set language type to Spanish but allow to switch to English/Russian
+% This configures the font's ligature, the predefined words "Figure"
+% and "Table" (that now in Spanish will be "Figura" and "Tabla") and other
+% stuff
+% https://es.overleaf.com/learn/latex/Multilingual_typesetting_on_Overleaf_using_polyglossia_and_fontspec
+\usepackage{polyglossia}
+\setdefaultlanguage{spanish}
+\setotherlanguages{english,russian}
+
+% Set fonts
+% See https://es.overleaf.com/learn/latex/XeLaTeX
+% https://es.overleaf.com/learn/latex/Multilingual_typesetting_on_Overleaf_using_polyglossia_and_fontspec
+% https://es.overleaf.com/learn/latex/Russian
+% https://es.overleaf.com/learn/latex/Spanish
+% https://www.overleaf.com/learn/latex/Articles/Unicode,_UTF-8_and_multilingual_text:_An_introduction
+%
+% Examples
+% https://www.overleaf.com/latex/examples/how-to-write-multilingual-text-with-different-scripts-in-latex/wfdxqhcyyjxz
+% https://www.overleaf.com/latex/templates/multilingual-thank-you/wjmrnnqkstyf
+%
+% These fonts supports bold, italics and that kind of styles
+% but also supports Cyrillic (Russian) letters and mathematical
+% symbols as unicode.
+\usepackage{fontspec}
+\setmainfont{FreeSerif}
+\setsansfont{FreeSans}
+\setmonofont{FreeMono}
+
+% Font family for the code (requires calling \monacofont)
+\newfontfamily\monacofont[Path=./fonts/]{monaco.ttf}
 
 % Disabled because it enters in conflict with tikz
 % The error says:
@@ -49,8 +79,6 @@
             pdfborder={0 0 0},
             breaklinks=true}
 
-\newfontfamily\monacofont[Path=./fonts/]{monaco.ttf}
-
 % Define some colors
 \usepackage{xcolor}
 \definecolor{darkgreen}{rgb}{0,.5,0}
@@ -77,3 +105,8 @@
 \usepackage{tikz}
 \usetikzlibrary{snakes,arrows,shapes}
 \usepackage{amsmath}
+
+\usepackage{fancyvrb}
+\usepackage{tcolorbox}
+\usepackage{pygmentex}
+\setpygmented{font=\monacofont,boxing method=tcolorbox,inline method=tcbox}
