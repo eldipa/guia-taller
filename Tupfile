@@ -18,6 +18,8 @@ endif
 # If no second input file is given, Jinja2 will use the environment variables.
 !j2md = |> j2 --customize scripts/j2-md.py %1f %2f > %1o |>  | ^scripts/__pycache__/*
 
+!j2cpp = |> j2 --customize scripts/j2-cpp.py %1f %2f > %1o |>  | ^scripts/__pycache__/*
+
 # Compile the given input Markdown file (%1f) into a standalone Tex file (%1o)
 # using Pandoc and filtered with Pandoc Filters.
 #
@@ -49,9 +51,9 @@ endif
 # so they can be a dependency of other rules that are over other
 # directories (Tup requires this to know about dependencies cross
 # multiple directories).
-: foreach src/*.j2.c |> !j2md |> out/src/%g.c <srcgroup>
-: foreach src/*.j2.h |> !j2md |> out/src/%g.h <srcgroup>
-: foreach src/*.j2.cpp |> !j2md |> out/src/%g.cpp <srcgroup>
+: foreach src/*.j2.c |> !j2cpp |> out/src/%g.c <srcgroup>
+: foreach src/*.j2.h |> !j2cpp |> out/src/%g.h <srcgroup>
+: foreach src/*.j2.cpp |> !j2cpp |> out/src/%g.cpp <srcgroup>
 
 # Compile each Markdown file into a separated Tex file with Pandoc
 # as an independent "standalone" Tex file.

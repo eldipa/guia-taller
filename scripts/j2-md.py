@@ -2,7 +2,7 @@
 # See https://github.com/kolypto/j2cli
 # pip install j2cli
 
-import jinja2
+import jinja2, re
 
 @jinja2.contextfunction
 def include_file_raw(ctx, name, indent=0):
@@ -156,30 +156,84 @@ def figure_fig(ctx, path, position='here', caption='', captionpos='bottom',
     return as_markup_latex(fig_env_tex)
 
 @jinja2.contextfunction
-def include_block(ctx, name, block, strip=True, indent=0, ctx_env={}):
+def include_block(ctx, name, block, strip=True, indent=0, compact=True, ctx_env={}):
     ''' Function to open and read the given file (<name>), see it
         as a Jinja template, get the named block (<block>) and
         evaluate it with the given context <ctx_env>.
 
         Then return it as is.
 
+        If <block> is None, grab the whole file.
+
+        If <strip> is given, the left indentation is removed from the
+        lines but preserving the overall indentation.
+
+        If <indent> is given, that amount of space is added on the left.
+
+        If <compact> is given, all the first and last lines that are
+        empty are removed.
+
         Example:
 
             {{ include_block(src_dir + "/" + fname, "header") }}
     '''
-    env = ctx.environment
+    # This special environment is for processing C/C++ files
+    # because we cannot use the Environment for Mardown files
+    env = jinja2.Environment(
+        # Change the blocks' start/end markers
+        # from  {% xxx %}  to  /*% xxx %*/
+        # In this way, they look like C/C++ comments
+        block_start_string='/*%',
+        block_end_string='%*/',
+
+        # Change the variables' start/end markers
+        # from  {{ xxx }}  to  /*{ xxx }*/
+        variable_start_string='/*{',
+        variable_end_string='}/*',
+
+	# Change the comments' start/end/markers
+        # from  {# xxx #}  to  /*# xxx #*/
+	comment_start_string='/*#',
+	comment_end_string='#*/',
+
+        loader=ctx.environment.loader
+    )
 
     # Get the template
     template = env.get_template(name)
 
-    # Get the named block from the template
-    block = template.blocks[block]
+    if block == None:
+        content = template.render(ctx)
+    else:
+        # Get the named block from the template
+        block = template.blocks[block]
 
-    content = jinja2.utils.concat(block(ctx))
-    if strip or indent:
+        content = jinja2.utils.concat(block(ctx))
+
+    if strip or indent or compact:
         lines = content.split('\n')
+
+        if compact:
+            # drop the first lines if they are empty
+            while lines and not lines[0].strip():
+                lines.pop(0)
+
+            # drop the last lines if they are empty
+            while lines and not lines[-1].strip():
+                lines.pop()
+
         if strip:
-            lines = (l.strip() for l in lines)
+            # Find the minimum of indentation to strip
+            MAX = 9999999
+            min_indent = MAX
+            for l in lines:
+                space = re.match(r'^(\s*)\S', l)
+                if space:
+                    space = space.group(1)
+                    min_indent = min(min_indent, len(space))
+
+            if min_indent < MAX:
+                lines = (l[min_indent:] for l in lines)
 
         if indent:
             indent = ' ' * indent
