@@ -86,7 +86,7 @@ RUN pip3 install                                \
 COPY pygmentex.sty /tmp
 
 RUN pip3 install                                \
-            pygments
+            pygments                            \
  && mkdir -p  /usr/share/texlive/texmf-dist/tex/latex/pygmentex             \
  && cp /tmp/pygmentex.sty /usr/share/texlive/texmf-dist/tex/latex/pygmentex \
  && cd /usr/share/texlive/texmf-dist/           \
