@@ -83,3 +83,12 @@ RUN pip3 install                                \
  && dpkg -i pandoc-2.14.0.3-1-amd64.deb    \
  && rm -f pandoc-2.14.0.3-1-amd64.deb
 
+COPY pygmentex.sty /tmp
+
+RUN pip3 install                                \
+            pygments
+ && mkdir -p  /usr/share/texlive/texmf-dist/tex/latex/pygmentex             \
+ && cp /tmp/pygmentex.sty /usr/share/texlive/texmf-dist/tex/latex/pygmentex \
+ && cd /usr/share/texlive/texmf-dist/           \
+ && mktexlsr
+
