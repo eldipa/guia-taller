@@ -134,88 +134,48 @@ def NOT_USED_enumarate_exercises_and_projects(elem, doc):
                 elem,
                 ]
 
-# Mapping from names of languages as they are understood by Markdown
-# to as they are understood by Latex
-md2tex_languages = {
-        'cpp': 'C++',
-        'nasm': 'Assembler',
-        'shell': 'bash',
-        }
 
-def pass_language_to_listing(elem, doc):
-    r''' Pandoc generates lstlisting environment for the fenced-code
-        blocks but it does not always set the language.
+from pygments.lexers import get_lexer_by_name
 
-        This filter ensures that it always happen:
+pygmented_block = r'''\begin{pygmented}[%s]%s%s%s\end{pygmented}'''
+pygmented_inline = r'''\pyginline[%s]%s%s%s'''
 
-            ```cpp
-            void foo
-            ```
-
-        It's translated to:
-
-            \begin{lstlisting}[language={C++}]
-                void foo
-            \end{lstlisting}
-
-        The same applies to inline code:
-
-            `foo`{.cpp}
-
-        Goes to:
-
-            \passthrough{\lstinline[language={C++}]!foo!}
-
-        The special 'none' language can be used to suppress
-        the styling (but lstlisting/lstinline is still being used)
-        This is handy to write inline code:
-
-            `foo`{.none}
-
-        Goes to:
-
-            \passthrough{\lstinline[]!foo!}
-        '''
+def highlight_code_inline_and_blocks_with_pygments(elem, doc):
     if type(elem) in {CodeBlock, Code} and elem.classes:
-        # Get the language of the code snippet and map it
-        # so it can be understood by Latex.
-        # Extract any attribute from the language before
-        lang = elem.classes[0]
-        lang, *attrs = lang.split(';')
-        lang = md2tex_languages.get(lang, lang)
+        lexer = None
+        lang, *attrs = elem.classes[0].split(';')
+        if lang == 'none':
+            return # TODO
 
-        if lang != 'none':
-            attrs.append("language={%s}" % lang)
+        try:
+            lexer = get_lexer_by_name(lang)
+        except:
+            pass
 
+        if not lexer:
+            return
+
+        attrs.append(f'lang={lang}')
         attrs = ', '.join(attrs)
 
-        if type(elem) == CodeBlock:
-            header = r"\begin{lstlisting}[%s]" % attrs
-            end = r"\end{lstlisting}"
+        code = elem.text
 
-            return RawBlock(
-                    text='\n'.join(("", header, elem.text, end, "")),
-                    format='tex'
-                    )
-        elif type(elem) == Code:
+        if type(elem) == Code:
             # pick a valid separator that is not present in the code
             # that we want to wrap
-            for sep in ('!', '|', '@'):
-                if sep not in elem.text:
+            for delim in ('|', '!', '@'):
+                if delim not in elem.text:
                     break
             else:
                 raise Exception("We don't know which separator to use.")
 
-            header = r"\passthrough{\lstinline[%s]%s" % (attrs, sep)
-            end = r"%s}" % sep
-
-            return RawInline(
-                    text=''.join((header, elem.text, end)),
-                    format='tex'
-                    )
+            text = pygmented_inline % (attrs, delim, code, delim)
+            return RawInline(text=text, format='tex')
+        elif type(elem) == CodeBlock:
+            text = pygmented_block % (attrs, '\n', code, '\n')
+            return RawBlock(text=text, format='tex')
         else:
             assert False
-
 
 def what(elem, doc):
     ''' Debugging / exploring / tracing. '''
@@ -236,5 +196,5 @@ if __name__ == '__main__':
         run_filters([
             what,
             set_cpp_as_lang_for_inline_code,
-            pass_language_to_listing,
+            highlight_code_inline_and_blocks_with_pygments,
             ])
