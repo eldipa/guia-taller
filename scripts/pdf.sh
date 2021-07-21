@@ -22,6 +22,7 @@ export PYGMENTE_TARGET="$2/$(basename -s .tex "$1")"
 #run_in_docker \
 latexmk \
     -Werror \
+    -time \
     -xelatex \
     -pdfxe \
     -pdfxelatex="./scripts/pygmenter_xelatex.sh %O %S" \
