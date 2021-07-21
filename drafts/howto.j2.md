@@ -1,4 +1,114 @@
 
+## Fonts
+
+This is an English text. Y este está en Español.
+
+Cyrilic is supported too: \textrussian{это текст на русском}
+
+The `textrussian{...}` is used to tag the text so the rules of the
+given language work (like how to split a word with it doesn't fit a
+line).
+
+#### Text styles
+
+Note: in Markdown, the *italics* marker are not just italics
+but emphasis that tries to highlight the text based on the context.
+
+Normal text, *important* stuff.
+
+\textbf{Bold text, \emph{important} stuff.}
+
+\textit{Italic text, \emph{important} stuff.}
+
+\underline{Underline text, \emph{important} stuff.}
+
+\textbf{\textit{Bold italic text, \emph{important} stuff.}}
+
+#### Using Latex
+
+Some of the \textbf{greatest}
+discoveries in \underline{science}
+were made by \textbf{\textit{accident}}, \textit{or not}.
+
+#### Using Markdown (*underline* is not supported here)
+
+Some of the **greatest**
+discoveries in science
+were made by ***accident***, *or not*.
+
+#### Russian
+
+(latex): \textbf{это} \underline{текст} \textbf{\textit{на}} \textit{русском}
+
+(markdown): **это** текст ***на*** *русском*
+
+
+### Source code font
+
+Font in the code should be using `Monaco` font (Russian and Unicode Math
+are less supported) `const char c[] = "hello!";`:
+
+```cpp
+const char c[] = "hello! 0.95 ≈ 1 это текст на русском";
+```
+
+## Math
+
+### Math symbols in Text
+
+The font supports math symbols written in plain text:
+
+Normal text (well supported): 0.95 ≈ 1 ∧ 0.5 ⟹  1/2 ∴ ∑ 3 ∃ ≤ 𝚆
+
+Italic (less supported): *0.95 ≈ 1 ∧ 0.5 XXX 1/2 ∴ ∑ 3 ∃ ≤ XXX*
+
+Bold (less supported): **0.95 ≈ 1 ∧ 0.5 XXX 1/2 ∴ ∑ 3 ∃ ≤ XXX**
+
+## Math symbols in Math context
+
+Latex, inline: \( 0.95 \approx 1 \wedge 0.5 \implies 1/2 \therefore \sum 3  \exists \le 𝚆 \)
+
+Unicode, inline: \(0.95 ≈ 1 ∧ 0.5 ⟹  1/2 ∴ ∑ 3 ∃ ≤ 𝚆\)
+
+
+Latex, block:
+
+\[
+0.95 \approx 1 \wedge 0.5 \implies 1/2 \therefore \sum 3  \exists \le 𝚆
+\]
+
+Unicode, block:
+
+$$
+0.95 ≈ 1 ∧ 0.5 ⟹  1/2 ∴ ∑ 3 ∃ ≤ 𝚆
+$$
+
+Use `\(...\)` for *inline* maths and `\[...\]` or `$$...$$` for *block* or
+*display* maths.
+
+## Emoji
+
+Support for emojis in fenced code blocks:
+
+```
+Normal fenced code
+// ⚠ alert
+// 😈evil
+// 💣boom
+```
+
+```cpp
+C++ fenced code
+// ⚠ alert
+// 😈evil
+// 💣boom
+```
+
+But they **are not** supported in inline codes.
+
+In plain text, no problem: ⚠ alert, 😈evil, 💣boom
+
+
 ## Source code
 
 Fenced code block, as in Markdown
@@ -15,7 +125,9 @@ This is handled by `filters/magic.py3` and they're passed directly
 to
 [listings](https://es.overleaf.com/learn/latex/Code_listing#Reference_guide)
 
-```nasm;numbers=left;frame=leftline
+{# nasm;numbers=left;frame=leftline #}
+
+```nasm
 mov     eax, DWORD PTR counter[rip]
 add     eax, 1
 mov     DWORD PTR counter[rip], eax
@@ -36,6 +148,10 @@ But plain fenced code **must not** be highlighted:
 ```
 const char* msg = "hello";  // después de la 'o', el compilador
 ```
+
+#### Regression tests
+
+This used to break: bla bla `"ethernet pkt here"` bla bla
 
 ## Columns
 
@@ -67,6 +183,21 @@ Text (currently the text cannot span more than one page)
 {{ separator }}
 {{ lipsum(min=5, max=10) }}
 {% endcall %}
+
+## Include
+
+Include a block of a file (must be a template, see `src/gfx.j2.c`;
+templates should be in `src/` and final files should be in `out/src/`)
+
+```cpp
+{{ include_block('src/gfx.j2.c', 'line_example') }}
+```
+
+Include the whole file
+
+```cpp
+{% include 'out/src/err.h' %}
+```
 
 ## Graphviz
 
@@ -106,20 +237,6 @@ Armate un otro programa que ...
 `strdup`  →  siempre    `strcpy`  →  siempre    `memcpy` →  nunca
 `strndup` →  siempre    `strncpy` →  a veces
 ---------------------   ---------------------   -----------------
-
-## Emoji
-
-Support for emojis in fenced code blocks:
-
-```
-// ⚠ alert
-// 😈evil
-// 💣boom
-```
-
-But they **are not** supported in inline codes.
-
-In plain text, no problem: ⚠ alert, 😈evil, 💣boom
 
 ## Images
 
@@ -174,6 +291,9 @@ Aptent taciti ultrices lobortis
 natoque lacus vulputate facilisis,
 platea odio praesent justo fermentum, nascetur ultricies enim.
 
+
+
+
 ## Footnotes
 
 Foo bar^[Asumiendo que la función de hash *bla bla bla*.]
@@ -193,6 +313,8 @@ commodo dis nascetur torquent, ac erat ultrices ligula mauris, ac ipsum
 volutpat sit aptent ut vivamus, mollis eget tristique. Senectus urna
 mauris nam nibh, cum non hendrerit justo.
 ]
+
+
 
 
 ## Citations
