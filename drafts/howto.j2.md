@@ -156,7 +156,7 @@ This used to break: bla bla `"ethernet pkt here"` bla bla
 Use the `on_columns` macro to put two pieces of text side by side into
 two or more columns (currently only in 2 columns)
 
-{% from 'templ/columns.j2' import on_columns %}
+{% from 'z/templ/columns.j2' import on_columns %}
 
 Code:
 
@@ -203,7 +203,7 @@ are in `out/src`.
 
 ## Graphviz
 
-{% from 'templ/diagrams.j2' import graphviz %}
+{% from 'z/templ/diagrams.j2' import graphviz %}
 
 {% call graphviz() %}
 ```dot
@@ -244,12 +244,12 @@ Armate un otro programa que ...
 
 **Without caption**:
 
-{% from 'templ/figures.j2' import fig %}
-{% call fig("img/cpp_logo.png") %}{% endcall %}
+{% from 'z/templ/figures.j2' import fig %}
+{% call fig("z/img/cpp_logo.png") %}{% endcall %}
 
 **With caption at bottom**:
 
-{% call fig("img/cpp_logo.png") %}
+{% call fig("z/img/cpp_logo.png") %}
 Aptent taciti ultrices lobortis
 natoque lacus vulputate facilisis,
 platea odio praesent justo fermentum, nascetur ultricies enim.
@@ -258,7 +258,7 @@ platea odio praesent justo fermentum, nascetur ultricies enim.
 **Without caption; text around the figure**:
 
 
-{% call fig("img/cpp_logo.png", position='left') %}{% endcall %}
+{% call fig("z/img/cpp_logo.png", position='left') %}{% endcall %}
 Aptent taciti ultrices lobortis
 natoque lacus vulputate facilisis,
 platea odio praesent justo fermentum, nascetur ultricies enim.
@@ -273,7 +273,7 @@ platea odio praesent justo fermentum, nascetur ultricies enim.
 
 **With caption; text around the figure**:
 
-{% call fig("img/cpp_logo.png", position='left') %}
+{% call fig("z/img/cpp_logo.png", position='left') %}
 Some caption here bla bla bla
 bal bal bal
 {% endcall %}

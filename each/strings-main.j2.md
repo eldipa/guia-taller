@@ -431,8 +431,8 @@ crackear este password con [Hashcat](https://hashcat.net/):
 
 Suerte!
 
-{% from 'templ/figures.j2' import fig %}
-{% call fig("img/xkcd/password_strength_936.png", figparams={'width':'0.85\\textwidth'}) %}
+{% from 'z/templ/figures.j2' import fig %}
+{% call fig("z/img/xkcd/password_strength_936.png", figparams={'width':'0.85\\textwidth'}) %}
 Algo para pensar cuando elijas un password. Créditos por la imagen
 a xkcd (936).
 {% endcall %}

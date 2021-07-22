@@ -32,7 +32,7 @@ finalizar el programa? Esto es, cuando `t1` y `t2` terminaron de llamar a
 La funcion `inc()` ejecuta una unica instruccion de C++ pero esto no
 significa que la CPU ejecute una sola instruccion. En x86_64 son 3.
 
-{% from 'templ/columns.j2' import on_columns %}
+{% from 'z/templ/columns.j2' import on_columns %}
 
 {% call(separator) on_columns() %}
 ```cpp

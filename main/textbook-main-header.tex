@@ -12,9 +12,9 @@
 % Map Unicode emojis to PDF images. Based on coloremoji.sty
 % See https://github.com/alecjacobson/coloremoji.sty
 \usepackage{newunicodechar}
-\newunicodechar{😈}{\text{\raisebox{-0.2em}{\includegraphics[height=1em]{img/emoji/evil.pdf}}}}
-\newunicodechar{💣}{\text{\raisebox{-0.2em}{\includegraphics[height=1em]{img/emoji/bomb.pdf}}}}
-\newunicodechar{⚠}{\text{\raisebox{-0.2em}{\includegraphics[height=1em]{img/emoji/alert.pdf}}}}
+\newunicodechar{😈}{\text{\raisebox{-0.2em}{\includegraphics[height=1em]{z/img/emoji/evil.pdf}}}}
+\newunicodechar{💣}{\text{\raisebox{-0.2em}{\includegraphics[height=1em]{z/img/emoji/bomb.pdf}}}}
+\newunicodechar{⚠}{\text{\raisebox{-0.2em}{\includegraphics[height=1em]{z/img/emoji/alert.pdf}}}}
 
 % Set language type to Spanish but allow to switch to English/Russian
 % This configures the font's ligature, the predefined words "Figure"
@@ -45,7 +45,7 @@
 \setmonofont{FreeMono}
 
 % Font family for the code (requires calling \monacofont)
-\newfontfamily\monacofont[Path=./fonts/]{monaco.ttf}
+\newfontfamily\monacofont[Path=./z/fonts/]{monaco.ttf}
 
 % Disabled because it enters in conflict with tikz
 % The error says:
