@@ -9,7 +9,7 @@ if [ "$#" != 2 ]; then
     exit 1
 fi
 
-. scripts/run_in_docker.sh
+. scripts/x/run_in_docker.sh
 
 # Note: we use stdin to pipe the file instead of letting clang
 # to read it because otherwise clang will user file's folder to search

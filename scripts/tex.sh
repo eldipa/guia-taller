@@ -28,7 +28,7 @@ fi
 # However due a bug the date must be set here
 # and not in the header
 
-. scripts/run_in_docker.sh
+. scripts/x/run_in_docker.sh
 
 #run_in_docker \
 pandoc \

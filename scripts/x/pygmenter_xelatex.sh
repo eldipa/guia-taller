@@ -13,5 +13,5 @@ if [ -z "$PYGMENTE_TARGET" ]; then
     exit 1
 fi
 if [ -f "$PYGMENTE_TARGET.snippets" -a ! -f "$PYGMENTE_TARGET.pygmented" ]; then
-    ./scripts/pygmentex.py "$PYGMENTE_TARGET.snippets"
+    ./scripts/x/pygmentex.py "$PYGMENTE_TARGET.snippets"
 fi
