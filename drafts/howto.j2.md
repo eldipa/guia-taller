@@ -188,7 +188,7 @@ Include a block of a file (must be a template, see `src/gfx.j2.c`;
 templates should be in `src/` and final files should be in `out/src/`)
 
 ```cpp
-{{ include_block('src/gfx.j2.c', 'line_example') }}
+{{ include_block('out/t/src/gfx.j2.c', 'line_example') }}
 ```
 
 Include the whole file
@@ -196,6 +196,10 @@ Include the whole file
 ```cpp;breakable
 {{ include_block('out/src/err.h', block=None, strip=False) }}
 ```
+
+Note: files that are still templates are in `out/t/src` while the files
+that were already processed by Jinja2 and they are not longer templates
+are in `out/src`.
 
 ## Graphviz
 

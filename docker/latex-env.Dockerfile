@@ -92,3 +92,8 @@ RUN pip3 install                                \
  && cd /usr/share/texlive/texmf-dist/           \
  && mktexlsr
 
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends -y install \
+            clang-format                        \
+ && apt-get clean                               \
+ && rm -rf /var/lib/apt/lists/
