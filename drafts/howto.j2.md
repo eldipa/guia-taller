@@ -245,11 +245,11 @@ Armate un otro programa que ...
 **Without caption**:
 
 {% from 'z/templ/figures.j2' import fig %}
-{% call fig("z/img/cpp_logo.png") %}{% endcall %}
+{% call fig("out/z/img/cpp_logo.png") %}{% endcall %}
 
 **With caption at bottom**:
 
-{% call fig("z/img/cpp_logo.png") %}
+{% call fig("out/z/img/cpp_logo.png") %}
 Aptent taciti ultrices lobortis
 natoque lacus vulputate facilisis,
 platea odio praesent justo fermentum, nascetur ultricies enim.
@@ -258,7 +258,7 @@ platea odio praesent justo fermentum, nascetur ultricies enim.
 **Without caption; text around the figure**:
 
 
-{% call fig("z/img/cpp_logo.png", position='left') %}{% endcall %}
+{% call fig("out/z/img/cpp_logo.png", position='left') %}{% endcall %}
 Aptent taciti ultrices lobortis
 natoque lacus vulputate facilisis,
 platea odio praesent justo fermentum, nascetur ultricies enim.
@@ -273,7 +273,7 @@ platea odio praesent justo fermentum, nascetur ultricies enim.
 
 **With caption; text around the figure**:
 
-{% call fig("z/img/cpp_logo.png", position='left') %}
+{% call fig("out/z/img/cpp_logo.png", position='left') %}
 Some caption here bla bla bla
 bal bal bal
 {% endcall %}
