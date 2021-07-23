@@ -47,6 +47,8 @@ endif
 # NOTE: the following *requires* that there are not subfolder
 # inside each/ and drafts/
 # This is because we use %g and not %B in the output filename
+# We cannot use %B because it only strips the first extension
+# (xxx.j2.md -> xxx.j2) and we need the basename (xxx)
 : foreach each/*.j2.md | <srcgroup> <zgroup> |> !j2md |> out/each/md/%g.md
 : foreach drafts/*.j2.md | <srcgroup> <zgroup> |> !j2md |> out/drafts/md/%g.md
 
