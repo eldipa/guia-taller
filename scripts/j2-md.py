@@ -90,20 +90,6 @@ def diagram_graphviz(ctx, src, **kargs):
 @jinja2.contextfunction
 def figure_fig(ctx, path, position='here', caption='', captionpos='bottom',
         figparams={}, wrapsize=r'0.25\textwidth'):
-    ''' Take a dot graph and recoded as a tikz graph.
-
-        Source should be a graph wrapped in a fenced-code block:
-
-        src == """
-            ```foo
-            digraph G {
-                a_1-> a_2 -> a_3 -> a_1;
-            }
-            ```
-            """
-
-        Return a Latex literal. Arguments are passed to dot2tex.
-    '''
     # Build the "include the figure" tex code
     figparams_str = ','.join(f'{key}={val}' for key, val in figparams.items())
     fig_include_tex = r'\includegraphics[%s]{%s}' % (figparams_str, path)

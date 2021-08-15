@@ -121,9 +121,7 @@ void inc() {
 ```
 
 Parameters are added and separated with `;`.
-This is handled by `filters/magic.py3` and they're passed directly
-to
-[listings](https://es.overleaf.com/learn/latex/Code_listing#Reference_guide)
+This is handled by `filters/magic.py3`
 
 ```nasm;linenos;frameleft
 mov     eax, DWORD PTR counter[rip]
