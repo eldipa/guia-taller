@@ -17,7 +17,7 @@
 
 #}
 {% macro graphviz(format='tikz', prog='dot', texmode='math', straightedges=False, autosize=True, codeonly=False) -%}
-{{ diagram_graphviz(caller(), format=format, prog=prog, texmode=texmode, straightedges=straightedges, autosize=autosize, codeonly=codeonly) }}
+{{ _diagrams__graphviz(caller(), format=format, prog=prog, texmode=texmode, straightedges=straightedges, autosize=autosize, codeonly=codeonly) }}
 {%- endmacro %}
 
 

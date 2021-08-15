@@ -1,23 +1,16 @@
 
 {#
-    graphviz() macro will take the caller's content, which
-    it is expected to be a graph in 'dot' notation wrapped in a
-    fenced-code block, and it will return Latex code that draws
-    the graph using Tikz.
-
+    fig() macro will take the caller's content as the caption
+    of an image/figure to include.
     Example:
 
-        {% call graphviz() %}
-        ```dot
-        digraph G {
-            a_1-> a_2 -> a_3 -> a_1;
-        }
-        ```
+        {% call fig(path) %}
+        Foo bar
         {% endcall %}
 
 #}
 {% macro fig(path, position="here", captionpos="bottom", figparams={}, wrapsize='0.25\\textwidth') -%}
-{{ figure_fig(path=path, position=position, caption=caller(),
+{{ _figures__fig(path=path, position=position, caption=caller(),
     captionpos=captionpos, figparams=figparams, wrapsize=wrapsize) }}
 {%- endmacro %}
 

@@ -60,7 +60,7 @@ def strip_fenced_code_block_markers(src):
 import dot2tex
 
 @jinja2.contextfunction
-def diagram_graphviz(ctx, src, **kargs):
+def _diagrams__graphviz(ctx, src, **kargs):
     ''' Take a dot graph and recoded as a tikz graph.
 
         Source should be a graph wrapped in a fenced-code block:
@@ -88,7 +88,7 @@ def diagram_graphviz(ctx, src, **kargs):
     return as_markup_latex(tex)
 
 @jinja2.contextfunction
-def figure_fig(ctx, path, position='here', caption='', captionpos='bottom',
+def _figures__fig(ctx, path, position='here', caption='', captionpos='bottom',
         figparams={}, wrapsize=r'0.25\textwidth'):
     # Build the "include the figure" tex code
     figparams_str = ','.join(f'{key}={val}' for key, val in figparams.items())
@@ -142,7 +142,7 @@ def figure_fig(ctx, path, position='here', caption='', captionpos='bottom',
     return as_markup_latex(fig_env_tex)
 
 @jinja2.contextfunction
-def extra_footage_box_begin(ctx):
+def _boxes__extra_footage_begin(ctx):
     # Options:
     #   enhanced jigsaw: needed to not draw a closed box on each page
     #   when the extra_footage spans multiple pages. Instead draw each
@@ -157,7 +157,7 @@ def extra_footage_box_begin(ctx):
     return as_markup_latex(r'''\begin{tcolorbox}[%s]''' % flags)
 
 @jinja2.contextfunction
-def extra_footage_box_end(ctx):
+def _boxes__extra_footage_end(ctx):
     return as_markup_latex(r'''\end{tcolorbox}''')
 
 
@@ -257,17 +257,17 @@ def j2_environment_params():
 
 # DO NOT RENAME THIS FUNCTION (required by j2cli)
 def j2_environment(env):
-    # Make the function include_file_raw available in the templates
-    # as {{ include_file_raw(filename) }}
+    # Public functions
     env.globals['include_file_raw'] = include_file_raw
-
     env.globals['ej'] = exercise_marker
     env.globals['proj'] = project_marker
-    env.globals['diagram_graphviz'] = diagram_graphviz
-    env.globals['figure_fig'] = figure_fig
     env.globals['include_block'] = include_block
-    env.globals['extra_footage_box_begin'] = extra_footage_box_begin
-    env.globals['extra_footage_box_end'] = extra_footage_box_end
+
+    # Private functions
+    env.globals['_diagrams__graphviz'] = _diagrams__graphviz
+    env.globals['_figures__fig'] = _figures__fig
+    env.globals['_boxes__extra_footage_begin'] = _boxes__extra_footage_begin
+    env.globals['_boxes__extra_footage_end'] = _boxes__extra_footage_end
 
 # DO NOT RENAME THIS FUNCTION (required by j2cli)
 def extra_tests():

@@ -12,9 +12,9 @@
 
 #}
 {% macro extra_footage() -%}
-{{ extra_footage_box_begin() }}
+{{ _boxes__extra_footage_begin() }}
 {{ caller() }}
-{{ extra_footage_box_end() }}
+{{ _boxes__extra_footage_end() }}
 {%- endmacro %}
 
 
