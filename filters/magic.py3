@@ -189,6 +189,7 @@ def highlight_code_inline_and_blocks_with_pygments(elem, doc):
             'valign': 'top',
             'size': 'minimal',
             'sty': 'candombe',
+            'breakable': None,
             }
 
         flags = set(filter(None, flags))
@@ -197,7 +198,7 @@ def highlight_code_inline_and_blocks_with_pygments(elem, doc):
             options.pop('frame empty')
             options.update({
                 'frame hidden': None,
-                'enhanced': None,
+                'enhanced jigsaw': None,
                 'opacityframe': '1',
                 'boxrule': '2px',
                 'colframe': 'black',

@@ -191,7 +191,7 @@ templates should be in `src/` and final files should be in `out/src/`)
 
 Include the whole file
 
-```cpp;breakable
+```cpp
 {{ include_block('out/src/err.h', block=None, strip=False) }}
 ```
 
