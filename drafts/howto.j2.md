@@ -292,6 +292,19 @@ natoque lacus vulputate facilisis,
 platea odio praesent justo fermentum, nascetur ultricies enim.
 
 
+## Extra footage
+
+
+{% from 'z/templ/boxes.j2' import extra_footage %}
+
+{% call extra_footage() %}
+Por que `assert(rdptr >= wrptr)` ? Sabemos que `wrptr` *nunca* va a
+sobrepasar a `rdptr`, es un *invariante* del algoritmo.
+
+Pero el código es un ser viviente y lo único
+constante es el cambio. Basta con algún error de nuestra parte
+o un refactor en el futuro y podemos caer en `wrptr > rdptr`.
+{% endcall %}
 
 
 ## Footnotes

@@ -142,6 +142,26 @@ def figure_fig(ctx, path, position='here', caption='', captionpos='bottom',
     return as_markup_latex(fig_env_tex)
 
 @jinja2.contextfunction
+def extra_footage_box_begin(ctx):
+    # Options:
+    #   enhanced jigsaw: needed to not draw a closed box on each page
+    #   when the extra_footage spans multiple pages. Instead draw each
+    #   to make the illusion that the box continues in the next page.
+    #
+    #   breakable: needed otherwise extra_footage larger than a page
+    #   will not span multiple pages
+    #
+    #   before upper: [weird] don't collapse the paragraphs in
+    #   the extra_footage.
+    flags = 'title={Extra footage},enhanced jigsaw,breakable,before upper=\setlength{\parskip}{1em}'
+    return as_markup_latex(r'''\begin{tcolorbox}[%s]''' % flags)
+
+@jinja2.contextfunction
+def extra_footage_box_end(ctx):
+    return as_markup_latex(r'''\end{tcolorbox}''')
+
+
+@jinja2.contextfunction
 def include_block(ctx, name, block, strip=True, indent=0, compact=True, ctx_env={}):
     ''' Function to open and read the given file (<name>), see it
         as a Jinja template, get the named block (<block>) and
@@ -246,6 +266,8 @@ def j2_environment(env):
     env.globals['diagram_graphviz'] = diagram_graphviz
     env.globals['figure_fig'] = figure_fig
     env.globals['include_block'] = include_block
+    env.globals['extra_footage_box_begin'] = extra_footage_box_begin
+    env.globals['extra_footage_box_end'] = extra_footage_box_end
 
 # DO NOT RENAME THIS FUNCTION (required by j2cli)
 def extra_tests():

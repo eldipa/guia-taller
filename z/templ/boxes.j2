@@ -1,0 +1,20 @@
+{#
+    extra_footage() macro will take the caller's content and it will put
+    it into a "extra footage" box.
+
+    Example:
+
+        {% call extra_footage() %}
+        Foo bar
+
+        Bla bla
+        {% endcall %}
+
+#}
+{% macro extra_footage() -%}
+{{ extra_footage_box_begin() }}
+{{ caller() }}
+{{ extra_footage_box_end() }}
+{%- endmacro %}
+
+
