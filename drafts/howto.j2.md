@@ -3,9 +3,21 @@
 
 Language names:
 
- - C++ gets \cplusplus
- - C gets C
- - C/C++ gets \Ccplusplus
+ - C++
+ - C
+ - C/C++
+ - C/C++.
+ - The C/C++ between words
+
+```
+In a fenced block C++
+```
+
+```cpp
+// In cpp fenced block C++
+```
+
+In Math: \(C++\)
 
 ## Fonts
 

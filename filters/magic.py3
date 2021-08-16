@@ -247,6 +247,20 @@ def highlight_code_inline_and_blocks_with_pygments(elem, doc):
         else:
             assert False
 
+def cpp_pretty_typing(elem, doc):
+    global trace_file
+    if type(elem) in {Str} and 'C++' in elem.text:
+        if 'C/C++' in elem.text:
+            token = 'C/C++'
+            latex = r'\Ccplusplus{}'
+        else:
+            token = 'C++'
+            latex = r'\cplusplus{}'
+
+        left, right = elem.text.split(token)
+        return [Str(left), RawInline(text=latex, format='tex'), Str(right)]
+
+
 def what(elem, doc):
     ''' Debugging / exploring / tracing. '''
     global trace_file
@@ -268,6 +282,7 @@ if __name__ == '__main__':
             what,
             set_cpp_as_lang_for_inline_code,
             highlight_code_inline_and_blocks_with_pygments,
+            cpp_pretty_typing,
             ])
     finally:
         if trace_file is not None:
