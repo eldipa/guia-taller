@@ -1,14 +1,13 @@
 
-
 Reemplazar todas las apariciones de `"A"` por `"BB"`.
 
 La solución intuitiva sería tener un buffer destino donde ir guardando
 el nuevo string.
 
-```
-src: aaaAabbAAaaAaaa
+```cpp
+src: "aaaAabbAAa"
 
-dst: aaaBBabbBBBBaa
+dst: "aaaBBabbBBBBa"
 ```
 
 Lo que tenemos que resolver primero entonces es el tamaño de `dst`.
@@ -21,7 +20,7 @@ que nos quedamos *cortos*, expandimos el buffer.
 bytes escribiríamos en `dst`; con el tamaño exacto hacemos un
 *segundo* procesado, esta vez ya escribiendo en `dst`.
 
-Puede que la segunda opción suene mas ineficiente: y sí, estamos
+Puede que la segunda opción suene más ineficiente: y sí, estamos
 realizando 2 veces el procesamiento.
 
 Es lo que se llama un algoritmo de *dos pasadas* o *two passes*.
@@ -37,7 +36,7 @@ Pero y si no hay espacio? `realloc` se verá
 forzado a reservar un buffer entero y transferir (aka
 copiar) el contenido del buffer viejo al nuevo.
 
-Varios `realloc`s, varias copias, mas lento.
+Varios `realloc`s, varias copias, más lento.
 
 
 
@@ -85,7 +84,7 @@ Pero aquí le pondremos una vuelta de tuerca: el reemplazo se tiene
 que hacer sobre el mismo buffer de entrada y sin usar un buffer
 auxiliar.
 
-Y esto lo cambia todo: como escribimos mas bytes de los que leemos,
+Y esto lo cambia todo: como escribimos más bytes de los que leemos,
 estaremos pisando/sobreescribiendo bytes que aun no leímos.
 
 ```cpp
@@ -214,7 +213,7 @@ especial y que no sea factible alloc'ar nuevos buffers.
 
 O simplemente no hay memoria suficiente para el buffer adicional.
 Hoy en día las computadoras tienen decenas de gigas pero no olvides
-que los problemas a resolver son cada vez mas grandes también!
+que los problemas a resolver son cada vez más grandes también!
 
 
 {{ ej() }}
@@ -251,8 +250,8 @@ una forma de achicar un archivo pero POSIX sí. Busca `ftruncate()`.
 {{ ej() }}
 
 Dado un archivo `foo.dat`, reemplazar todas las apariciones
-de `"A"` por `"BB"` y `"CC"` por `"D"`. Cuidado que esto es mas tricky
-de lo q aparenta.
+de `"A"` por `"BB"` y `"CC"` por `"D"`. Cuidado que esto es más *tricky*
+de lo que aparenta.
 
 Imaginate la secuencia `"ACC"`; el resultado final seria `"BBD"`.
 
@@ -265,11 +264,11 @@ Pero tendrás igual una corrupción y en vez de `"BBD"` tendrás `"BBC"`.
 Tip: si no lo ves, codealo y ejecutalo a ver que pasa. Que invariante
 se rompe?
 
-Ahora que tenes una idea de por que no funcionaría contar bytes totales,
-lo q tenes que hacer es contar el máximo número de bytes por los que
+Tip: Ahora que tenes una idea de por que no funcionaría contar bytes totales,
+lo que tenes que hacer es contar el máximo número de bytes por los que
 `wrptr` sobrepasa a `rdptr`.
 
-Tricky, pero no imposible.
+*Tricky*, pero no imposible.
 
 {{ ej() }}
 
@@ -280,18 +279,3 @@ Te mentí. Podes usar una estructura de datos auxiliar.
 
 Implementate `void repl_inplace(char* src)`
 usando una *rope data structure*.
-
-
-
-2
-60
-94
-128
-152
-178
-204
-223
-249
-275
-300
-354
