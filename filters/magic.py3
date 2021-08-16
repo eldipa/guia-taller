@@ -3,7 +3,7 @@
 from panflute import (run_filters, Code, Header, Str, Para, Space,
 RawInline, Plain, Link, CodeBlock, RawBlock)
 
-import sys
+import sys, os
 
 trace_file=None
 
@@ -250,6 +250,10 @@ def highlight_code_inline_and_blocks_with_pygments(elem, doc):
 def what(elem, doc):
     ''' Debugging / exploring / tracing. '''
     global trace_file
+    if trace_file is None:
+        fname = os.getenv("PANFLUTE_TRACE_FILENAME", 'unknown.panflute-trace')
+        trace_file = open(fname, 'wt')
+
     print(type(elem), file=trace_file)
     if type(elem) in {CodeBlock, Code}:
         print("-----", elem, "-----", file=trace_file)
@@ -259,12 +263,12 @@ def what(elem, doc):
     #    print(elem, file=trace_file)
 
 if __name__ == '__main__':
-    fname = '/dev/null'
-    #fname = 'log.log'
-    with open(fname, 'wt') as f:
-        trace_file = f
+    try:
         run_filters([
             what,
             set_cpp_as_lang_for_inline_code,
             highlight_code_inline_and_blocks_with_pygments,
             ])
+    finally:
+        if trace_file is not None:
+            trace_file.close()

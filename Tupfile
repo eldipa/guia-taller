@@ -76,8 +76,8 @@ endif
 #   out/each/md/*.md  -->  out/each/tex/*.tex
 #   out/drafts/md/*.md  -->  out/drafts/tex/*.tex
 #
-: foreach out/each/md/*.md |> !tex  |> out/each/tex/%B.tex
-: foreach out/drafts/md/*.md |> !tex  |> out/drafts/tex/%B.tex
+: foreach out/each/md/*.md |> !tex  |> out/each/tex/%B.tex ^out/dbg/%B.panflute-trace
+: foreach out/drafts/md/*.md |> !tex  |> out/drafts/tex/%B.tex ^out/dbg/%B.panflute-trace
 
 # Compile each standalone Tex file into a separated PDF file with LatexMK
 #
@@ -101,7 +101,7 @@ endif
 #   out/main/md/textbook-main.md   -->  out/main/tex/textbook-main.tex
 #   out/main/tex/textbook-main.tex  -->  out/main/pdf/textbook-main.pdf
 #
-: out/main/md/textbook-main.md  |> !tex   |> out/main/tex/%1B.tex ^out/filter_trace.log
+: out/main/md/textbook-main.md  |> !tex   |> out/main/tex/%1B.tex ^out/dbg/%B.panflute-trace
 : out/main/tex/textbook-main.tex |> !pdf out/main/pdf/  |> out/main/pdf/%B.pdf out/main/pdf/%B.aux out/main/pdf/%B.fdb_latexmk out/main/pdf/%B.fls out/main/pdf/%B.log out/main/pdf/%B.xdv  out/main/pdf/%B.console_log  out/main/pdf/%B.bcf  out/main/pdf/%B.run.xml  out/main/pdf/%B.blg  out/main/pdf/%B.bbl out/main/pdf/%B.snippets out/main/pdf/%B.pygmented
 
 
