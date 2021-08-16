@@ -179,21 +179,38 @@ def highlight_code_inline_and_blocks_with_pygments(elem, doc):
         if not lexer:
             return
 
+        # Options for "pygmentex"
         options = {
             'lang': lang,
+            }
+
+        # Options to make the box around the code invisible
+        # and breakable (aka, that can span multiple pages)
+        options.update({
             'boxrule': '0pt',
             'frame empty': None,
             'opacityback': '0',
             'opacityframe': '0',
+            'breakable': None,
+            })
+
+        # Options to align the code: left and top (reasonable)
+        options.update({
             'halign': 'left',
             'valign': 'top',
+            })
+
+        # Options to style source code: candombe style and minimal size.
+        # The candombe style is defined in scripts/x/pygmentex.py
+        options.update({
             'size': 'minimal',
             'sty': 'candombe',
-            'breakable': None,
-            }
+            })
 
         flags = set(filter(None, flags))
         if 'frameleft' in flags:
+            # If the usef wants a "frameleft" we want to show the box
+            # but only the left line which will look like a ruler.
             flags.discard('frameleft')
             options.pop('frame empty')
             options.update({

@@ -56,8 +56,16 @@
 %   l.86 ...in{tikzpicture}[>=latex',line join=bevel,]
 %\usepackage[spanish]{babel}
 
+% Show in each page a DRAFT marker
 \usepackage{draftwatermark}
 \SetWatermarkColor[gray]{0.96}
+
+% With this additional setting, the marker DRAFT is "actually" empty.
+% The DRAFT word will be shown but it will be uncopyable
+% https://tex.stackexchange.com/questions/309875/uncopyable-watermark
+\SetWatermarkLightness{0.96}\SetWatermarkText{%
+    \BeginAccSupp{method=escape,ActualText={}}DRAFT\EndAccSupp{}
+}
 
 % call \chapterauthor{aaa} *after* each chapter begin to name the author
 % of it
@@ -90,12 +98,28 @@
 \usepackage{amsmath}
 
 \usepackage{fancyvrb}
+
+% This package allows any kind of "boxes" to put messages.
+% It is used by pygmentex to put the snippets of code.
 \usepackage{tcolorbox}
 \tcbuselibrary{breakable}
 \tcbuselibrary{skins}
+
+% This package takes the code inside the "pygmented" (block) environments
+% and the "pyginline" (inline) snippets and replaces them with the highlighted
+% source code.
+% This works in two passes: the first the latex is processed and the snippets
+% are extracted out in a file called ".snippets". By hand someone process this
+% file and generates the highlighted code and saves it into ".pygmented" file.
+% This "by hand process" is done by scripts/x/pygmenter_xelatex.sh and
+% ./scripts/x/pygmentex.py.
+% The second pass the ".pygmented" is included back into the tex file.
+%
+% This package uses tcolorbox for handling the boxes where the code will be.
 \usepackage{pygmentex}
 \setpygmented{font=\monacofont\small,boxing method=tcolorbox,inline method=tcbox}
 
+% Draw a tiny ruler for the code snippets.
 % https://tex.stackexchange.com/questions/128636/center-hrule-in-the-middle-of-the-page
 \newcommand{\SectionBreak}{%
     \vskip 1ex
@@ -109,3 +133,8 @@
 }
 
 \usepackage{lipsum}
+
+% Package for "accessibility support"
+%  - required to make the DRAFT marker to be uncopyable
+\usepackage{accsupp}
+

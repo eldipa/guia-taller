@@ -83,6 +83,13 @@ RUN pip3 install                                \
  && dpkg -i pandoc-2.14.0.3-1-amd64.deb    \
  && rm -f pandoc-2.14.0.3-1-amd64.deb
 
+RUN apt-get update \
+ && DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends -y install \
+            clang-format                        \
+            optipng                             \
+ && apt-get clean                               \
+ && rm -rf /var/lib/apt/lists/
+
 COPY pygmentex.sty /tmp
 
 RUN pip3 install                                \
@@ -92,9 +99,3 @@ RUN pip3 install                                \
  && cd /usr/share/texlive/texmf-dist/           \
  && mktexlsr
 
-RUN apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends -y install \
-            clang-format                        \
-            optipng                             \
- && apt-get clean                               \
- && rm -rf /var/lib/apt/lists/
