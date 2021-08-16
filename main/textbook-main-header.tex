@@ -138,3 +138,9 @@
 %  - required to make the DRAFT marker to be uncopyable
 \usepackage{accsupp}
 
+% Define two commands to type C++ and C/C++ names. Basically
+% these prevents line breaks and makes the ++ smaller.
+% https://tex.stackexchange.com/questions/4302/prettiest-way-to-typeset-c-cplusplus
+\usepackage{relsize}
+\newcommand\cplusplus{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\relsize{-3}{\textbf{++}}}}
+\newcommand\Ccplusplus{C/C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\relsize{-3}{\textbf{++}}}}

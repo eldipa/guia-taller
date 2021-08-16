@@ -1,4 +1,12 @@
 
+## C/C++
+
+Language names:
+
+ - C++ gets \cplusplus
+ - C gets C
+ - C/C++ gets \Ccplusplus
+
 ## Fonts
 
 This is an English text. Y este está en Español.
