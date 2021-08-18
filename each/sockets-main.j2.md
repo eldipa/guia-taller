@@ -35,7 +35,7 @@ Tip: si el delimitador tuviese N caracteres, `get_msg` seria equivalente
 a llamar a `get_line` N veces, 1 por cada caracter del delimitador,
 siempre que todas menos la primer línea estén vacías.
 
-{{ ej() }}
+{{ ej(tricky=True) }}
 
 Implementate una funcion que *escapee* un caracter *prohibido* prefijando otro.
 
@@ -80,7 +80,7 @@ unescape("foo|;|;bar||baz", "|");
 "foo;;bar|baz"
 ```
 
-{{ ej() }}
+{{ ej(tricky=True) }}
 
 Los protocolos de texto rara vez permiten datos binarios crudos. En
 cambio suelen *encodear* los datos binarios en texto.
@@ -113,7 +113,7 @@ Implementate ahora `decode`. Imagino que sabras lo que hace.
 
 
 
-{{ ej() }}
+{{ ej(tricky=True) }}
 
 Un *request* HTTP 1.1 consta de una linea con el request en sí seguido
 por cero o lineas con los headers y un payload opcional.

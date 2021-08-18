@@ -306,7 +306,7 @@ de la máquina y lo pase a little endian usando `swap_bytes` y
 Create otra función que haga la inversa: de little endian al endianness
 de la máquina.
 
-{{ ej() }}
+{{ ej(tricky=True) }}
 
 Suponete que estas en una arquitectura donde el número `0xaabbccdd` es
 visto como la secuencia de bytes `[0xbb, 0xaa, 0xdd, 0xcc]`.
@@ -323,7 +323,7 @@ endian números de 2, 4 y 8 bytes y viceversa:
 `uint64_t htome64(uint64_t)`, `uint16_t me16toh(uint16_t)`,
 `uint32_t me32toh(uint32_t)`, `uint64_t me64toh(uint64_t)`
 
-{{ ej() }}
+{{ ej(weird=True, tricky=True) }}
 
 *Crazy idea:* reimplementate el siguiente `bubble_sort`
 usando `htobe16` o `htole16` en reemplazo del swap.

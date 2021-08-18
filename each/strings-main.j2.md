@@ -104,7 +104,7 @@ Como se vió, `strncpy` es la versión *"segura"* de `strcpy`. Cuáles son
 las funciones *"seguras"* de las funciones del ejercicio anterior?
 
 
-{{ ej() }}
+{{ ej(weird=True) }}
 
 `strncpy` es *"segura"* sólo si se la usa correctamente!
 
@@ -238,7 +238,7 @@ Tip: si tuvieras que implementar `strlen` a mano, como la harías? Y si
 ahora tuvieras que implementarla pero sin asumir un `'\0'`? Ajá!
 
 
-{{ ej() }}
+{{ ej(tricky=True) }}
 Implementate la siguiente función:
 
 ```cpp
@@ -291,7 +291,7 @@ para trabajar con binario usas `std::vector<char>`.
 
 #### Ejercicios
 
-{{ ej() }}
+{{ ej(tricky=True) }}
 
 Reimplementá `strreplace` y `memreplace` en sus versiones de C++. No
 vale usar ninguna función de C! Tenés que usar los métodos de

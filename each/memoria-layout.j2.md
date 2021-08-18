@@ -446,7 +446,7 @@ bien podés usar `offsetof` si tu compilador lo soporta.
 Reordená los atributos de las estructuras `dii_t`, `idi_t`,
 `ssd_t`, `csc_t` y `id_t` tal que su size sea el mínimo.
 
-Técnicas como estas pueden ahora **mucha** memoria si el programa hace un
+Técnicas como estas pueden ahorrar **mucha** memoria si el programa hace un
 uso intensivo de `struct`.
 
 Tip: `double > int > short > char`
@@ -566,7 +566,7 @@ process(&s1);   // Hacemos uso de una estructura alineada y "más rápida"
 Cuál *crees* que es el tamaño de `struct icic_t s_arr[10]`? Y el de `struct
 icic_packed_t p_arr[10]`? Verificá si acertaste o no.
 
-{{ ej() }}
+{{ ej(weird=True, tricky=True) }}
 
 Toma la siguiente estructura alineada a 4 bytes ya inicializada:
 
