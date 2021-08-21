@@ -32,7 +32,7 @@ fi
 
 # This is the way that we have to communicate to Panflute's filter
 # which file must log
-export PANFLUTE_TRACE_FILENAME="out/dbg/$(basename -s .tex "$2").panflute-trace"
+export PANFLUTE_TRACE_FILENAME="dbg/$(basename -s .tex "$2").panflute-trace"
 
 #run_in_docker \
 pandoc \

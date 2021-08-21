@@ -1,5 +1,6 @@
 *.swp
 .tup
 /notes.md
+/dbg
 /out
 /scripts/__pycache__

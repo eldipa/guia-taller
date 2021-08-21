@@ -39,18 +39,16 @@ endif
 
 !fmtpng = |> ./scripts/fmtpng.sh %1f %1o |>
 
-# Preprocess all the Markdown files in each/ and drafts/ with Jinja2
+# Preprocess all the Markdown files in parts/ with Jinja2
 #
-#   each/*.j2.md  -->  out/each/md/*.md
-#   drafts/*.j2.md  -->  out/drafts/md/*.md
+#   parts/*.j2.md  -->  out/parts/md/*.md
 #
 # NOTE: the following *requires* that there are not subfolder
-# inside each/ and drafts/
+# inside parts/
 # This is because we use %g and not %B in the output filename
 # We cannot use %B because it only strips the first extension
 # (xxx.j2.md -> xxx.j2) and we need the basename (xxx)
-: foreach each/*.j2.md | <srcgroup> <zgroup> |> !j2md |> out/each/md/%g.md
-: foreach drafts/*.j2.md | <srcgroup> <zgroup> |> !j2md |> out/drafts/md/%g.md
+: foreach parts/*.j2.md | <srcgroup> <zgroup> |> !j2md |> out/parts/md/%g.md
 
 # Preprocess all the source code (C/C++ files) in src/ with a
 # formatter first (out/t/src) and then with Jinja2 (out/src)
@@ -74,27 +72,22 @@ endif
 # Compile each Markdown file into a separated Tex file with Pandoc
 # as an independent "standalone" Tex file.
 #
-#   out/each/md/*.md  -->  out/each/tex/*.tex
-#   out/drafts/md/*.md  -->  out/drafts/tex/*.tex
+#   out/parts/md/*.md  -->  out/parts/tex/*.tex
 #
-: foreach out/each/md/*.md |> !tex  |> out/each/tex/%B.tex ^out/dbg/%B.panflute-trace
-: foreach out/drafts/md/*.md |> !tex  |> out/drafts/tex/%B.tex ^out/dbg/%B.panflute-trace
+: foreach out/parts/md/*.md |> !tex  |> out/parts/tex/%B.tex ^dbg/%B.panflute-trace
 
 # Compile each standalone Tex file into a separated PDF file with LatexMK
 #
-#   out/each/tex/*.tex  -->  out/each/pdf/*.pdf
-#   out/drafts/tex/*.tex  -->  out/drafts/pdf/*.pdf
+#   out/parts/tex/*.tex  -->  out/parts/pdf/*.pdf
 #
-: foreach out/each/tex/*.tex |> !pdf out/each/pdf/  |> out/each/pdf/%B.pdf out/each/pdf/%B.aux out/each/pdf/%B.fdb_latexmk out/each/pdf/%B.fls out/each/pdf/%B.log out/each/pdf/%B.xdv out/each/pdf/%B.console_log   out/each/pdf/%B.bcf out/each/pdf/%B.run.xml out/each/pdf/%B.blg out/each/pdf/%B.bbl out/each/pdf/%B.snippets out/each/pdf/%B.pygmented
-: foreach out/drafts/tex/*.tex |> !pdf out/drafts/pdf/  |> out/drafts/pdf/%B.pdf out/drafts/pdf/%B.aux out/drafts/pdf/%B.fdb_latexmk out/drafts/pdf/%B.fls out/drafts/pdf/%B.log out/drafts/pdf/%B.xdv  out/drafts/pdf/%B.console_log  out/drafts/pdf/%B.bcf  out/drafts/pdf/%B.run.xml  out/drafts/pdf/%B.blg  out/drafts/pdf/%B.bbl out/drafts/pdf/%B.snippets out/drafts/pdf/%B.pygmented
+: foreach out/parts/tex/*.tex |> !pdf out/parts/pdf/  |> out/parts/pdf/%B.pdf out/parts/pdf/%B.aux out/parts/pdf/%B.fdb_latexmk out/parts/pdf/%B.fls out/parts/pdf/%B.log out/parts/pdf/%B.xdv out/parts/pdf/%B.console_log   out/parts/pdf/%B.bcf out/parts/pdf/%B.run.xml out/parts/pdf/%B.blg out/parts/pdf/%B.bbl out/parts/pdf/%B.snippets out/parts/pdf/%B.pygmented
 
 
 # Ensamble the Markdown files into a single "main" Markdown with Jinja2
-# but don't include the 'drafts'
 #
-#   out/each/md/*.md  -->  out/main/md/textbook-main.md
+#   out/parts/md/*.md  -->  out/main/md/textbook-main.md
 #
-: main/textbook-main.j2.md main/index.yaml out/each/md/*.md |> !j2md |> out/main/md/textbook-main.md
+: main/textbook-main.j2.md main/index.yaml out/parts/md/*.md |> !j2md |> out/main/md/textbook-main.md
 
 # Compile the "ensambled" Markdown file into the final Tex file with Pandoc
 # as a "standalone" file. Then, compile it into a PDF with LatexMK
@@ -102,7 +95,7 @@ endif
 #   out/main/md/textbook-main.md   -->  out/main/tex/textbook-main.tex
 #   out/main/tex/textbook-main.tex  -->  out/main/pdf/textbook-main.pdf
 #
-: out/main/md/textbook-main.md  |> !tex   |> out/main/tex/%1B.tex ^out/dbg/%B.panflute-trace
+: out/main/md/textbook-main.md  |> !tex   |> out/main/tex/%1B.tex ^dbg/%B.panflute-trace
 : out/main/tex/textbook-main.tex |> !pdf out/main/pdf/  |> out/main/pdf/%B.pdf out/main/pdf/%B.aux out/main/pdf/%B.fdb_latexmk out/main/pdf/%B.fls out/main/pdf/%B.log out/main/pdf/%B.xdv  out/main/pdf/%B.console_log  out/main/pdf/%B.bcf  out/main/pdf/%B.run.xml  out/main/pdf/%B.blg  out/main/pdf/%B.bbl out/main/pdf/%B.snippets out/main/pdf/%B.pygmented
 
 
