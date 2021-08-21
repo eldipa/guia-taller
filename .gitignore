@@ -1,4 +1,5 @@
 *.swp
 .tup
+/notes.md
 /out
 /scripts/__pycache__
