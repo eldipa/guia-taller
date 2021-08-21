@@ -68,6 +68,7 @@ endif
 
 # Preprocess the PNG files
 : foreach z/img/xkcd/*.png |> !fmtpng |> out/z/img/xkcd/%g.png <zgroup>
+: foreach z/img/emoji/*.png |> !fmtpng |> out/z/img/emoji/%g.png <zgroup>
 : foreach z/img/*.png |> !fmtpng |> out/z/img/%g.png <zgroup>
 
 # Compile each Markdown file into a separated Tex file with Pandoc

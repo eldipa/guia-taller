@@ -323,7 +323,7 @@ endian números de 2, 4 y 8 bytes y viceversa:
 `uint64_t htome64(uint64_t)`, `uint16_t me16toh(uint16_t)`,
 `uint32_t me32toh(uint32_t)`, `uint64_t me64toh(uint64_t)`
 
-{{ ej(weird=True, tricky=True) }}
+{{ ej(hazard=True, tricky=True) }}
 
 *Crazy idea:* reimplementate el siguiente `bubble_sort`
 usando `htobe16` o `htole16` en reemplazo del swap.

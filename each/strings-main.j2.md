@@ -104,7 +104,7 @@ Como se vió, `strncpy` es la versión *"segura"* de `strcpy`. Cuáles son
 las funciones *"seguras"* de las funciones del ejercicio anterior?
 
 
-{{ ej(weird=True) }}
+{{ ej(hazard=True) }}
 
 `strncpy` es *"segura"* sólo si se la usa correctamente!
 

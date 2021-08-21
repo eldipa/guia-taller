@@ -39,8 +39,18 @@ def as_markup_latex(tex):
 exercise_or_project_marker = r'''\stepcounter{%(countername)s} \subsubsection{%(prefix)s \arabic{chapter}.\arabic{%(countername)s}: %(title)s}'''
 
 @jinja2.contextfunction
-def exercise_marker(ctx, weird=True, tricky=False):
-    content = exercise_or_project_marker % dict(prefix='Ej', countername='exercisecounter', title='')
+def exercise_marker(ctx, hazard=False, tricky=False):
+    tag = ''
+    if tricky:
+        tag += '↯'
+    if hazard:
+        tag += '☣'
+
+    prefix = 'Ej'
+    if tag:
+        prefix = tag + ' ' + prefix
+
+    content = exercise_or_project_marker % dict(prefix=prefix, countername='exercisecounter', title='')
     return as_markup_latex(content)
 
 

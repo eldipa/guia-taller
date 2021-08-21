@@ -566,7 +566,7 @@ process(&s1);   // Hacemos uso de una estructura alineada y "más rápida"
 Cuál *crees* que es el tamaño de `struct icic_t s_arr[10]`? Y el de `struct
 icic_packed_t p_arr[10]`? Verificá si acertaste o no.
 
-{{ ej(weird=True, tricky=True) }}
+{{ ej(hazard=True, tricky=True) }}
 
 Toma la siguiente estructura alineada a 4 bytes ya inicializada:
 
