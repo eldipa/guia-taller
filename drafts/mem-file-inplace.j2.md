@@ -1,26 +1,53 @@
+# Overlapping
 
-Reemplazar todas las apariciones de `"A"` por `"BB"`.
+Considerá el siguiente ejercicio: reemplazar todas las apariciones
+de `"A"` por `"BB"` en un string dado.
 
-La solución intuitiva sería tener un buffer destino donde ir guardando
-el nuevo string.
+Fácil? Le pondremos una vuelta de tuerca: el reemplazo se tiene
+que hacer sobre el mismo buffer de entrada y sin usar un buffer
+auxiliar.
+
+Te puede parecer algo artificial pero puede que el buffer
+este alloc'ado en una region de memoria
+especial y que no sea factible alloc'ar nuevos buffers.
+
+O simplemente no hay memoria suficiente para el buffer adicional.
+Hoy en día las computadoras tienen decenas de gigas pero no olvides
+que los problemas a resolver son cada vez más grandes también!
+
+Leer y modificar sobre el mismo buffer es un procesamiento *in place*.
+
+Más general, cuando el buffer de entrada se *solapa* parcial o
+completamente con el de salida diremos que hay *overlapping* entre
+los buffers.^[Trabajar *in place* es un caso particular de
+*overlapping*.]
+
+Y esto lo cambia todo.
+
+## Dos pasadas
+
+Veamos primero como resolveríamos el problema si pudieramos trabajar con
+un buffer adicional sin overlapping.
+
+Tendríamos el buffer de entrada `src` y el de salida `dst`:
 
 ```cpp
 src: "aaaAabbAAa"
-
 dst: "aaaBBabbBBBBa"
 ```
 
-Lo que tenemos que resolver primero entonces es el tamaño de `dst`.
+Dado `src`, lo que tenemos que resolver primero es saber el tamaño
+de `dst` y alloc'arlo.
 
 Y hay dos opciones:
 
- - asumimos un tamaño \(X\) y si a medida que procesamos el input vemos
-que nos quedamos *cortos*, expandimos el buffer.
- - o no asumimos nada y procesamos el input pero *solo contando* cuantos
-bytes escribiríamos en `dst`; con el tamaño exacto hacemos un
-*segundo* procesado, esta vez ya escribiendo en `dst`.
+ - asumimos un tamaño \(X\) y si a medida que procesamos `src` vemos
+que nos quedamos *cortos*, expandimos el buffer `dst`.
+ - o no asumimos nada y procesamos `src` pero *solo contando* cuantos
+bytes escribiríamos en `dst`; sabiendo ya el tamaño exacto, reservamos
+`dst` y hacemos un *segundo* procesado, esta vez sí escribiendo en `dst`.
 
-Puede que la segunda opción suene más ineficiente: y sí, estamos
+Puede que la segunda opción suene más ineficiente y sí, estamos
 realizando 2 veces el procesamiento.
 
 Es lo que se llama un algoritmo de *dos pasadas* o *two passes*.
@@ -80,9 +107,9 @@ char* repl_2pass(const char* src) {
 }
 ```
 
-Pero aquí le pondremos una vuelta de tuerca: el reemplazo se tiene
-que hacer sobre el mismo buffer de entrada y sin usar un buffer
-auxiliar.
+## In place
+
+Ahora forcemos que `dst` sea el mismo buffer de entrada `src`.
 
 Y esto lo cambia todo: como escribimos más bytes de los que leemos,
 estaremos pisando/sobreescribiendo bytes que aun no leímos.
@@ -100,9 +127,39 @@ estaremos pisando/sobreescribiendo bytes que aun no leímos.
     }
 ```
 
-Este problema sucede cuando las areas `src` y `dst` se *solapan*,
-sea parcial o completamente, o como en nuestro caso, cuando el
-procesamiento es *in place*.
+Este problema siempre lo tendremos cuando las areas `src` y `dst`
+se *solapen*, es decir cuando haya *overlapping*.
+
+Trabajar *in place* es solo un caso particular.
+
+La solución? Antes de comenzar la segunda fase movemos el contenido útil
+de `src` hacia el final del mismo.
+
+Dejando suficiente espacio al principio, el puntero de escritura `wrptr`
+nunca va a alcanzar al de lectura `rdptr`.
+
+```
+       Buffer src inicial
+      /-- --  --  --  -- --\
+      |                    |
+      +--------------------+-------+
+src > |     aaaAabbAAa     |  ???  |
+      +--------------------+---+---+
+                               |
+                               V
+                          Realloc'ados
+
+
+     wrptr   rdptr
+      |       |
+      V       V
+      +-------+--------------------+
+src > |  xxx  |     aaaAabbAAa     |
+      +-------+----------+---------+
+                         |
+                         V
+                 Contenido movido
+```
 
 ```cpp
 char* repl_2pass_inplace(const char* src) {
@@ -122,7 +179,7 @@ char* repl_2pass_inplace(const char* src) {
 
     size_t initial_sz = rdptr - src;
 
-    // Resize + shift: allocamos un buffer lo suficiente grande
+    // Resize + shift: alloc'amos un buffer lo suficiente grande
     // y "deslizamos/movemos" el contenido del buffer a la derecha
     // dejando N bytes libres al principio del buffer
     src = realloc(src, final_sz + 1);
@@ -204,17 +261,6 @@ Probá luego con `memmove`.
 
 
 
-Forzar usar el mismo buffer `src` como buffer de salida `dst`
-te puede parecer algo artificial pero hay situaciones en que
-es necesario.
-
-Puede que `src` sea un buffer alloc'ado en una region de memoria
-especial y que no sea factible alloc'ar nuevos buffers.
-
-O simplemente no hay memoria suficiente para el buffer adicional.
-Hoy en día las computadoras tienen decenas de gigas pero no olvides
-que los problemas a resolver son cada vez más grandes también!
-
 
 {{ ej() }}
 
@@ -247,7 +293,7 @@ de `"BB"` por `"A"`. Necesitas un algoritmo de 2 pasadas?
 El archivo resultante se achicará. El estándar C/C++ no ofrece
 una forma de achicar un archivo pero POSIX sí. Busca `ftruncate()`.
 
-{{ ej() }}
+{{ ej(tricky=True) }}
 
 Dado un archivo `foo.dat`, reemplazar todas las apariciones
 de `"A"` por `"BB"` y `"CC"` por `"D"`. Cuidado que esto es más *tricky*
@@ -279,3 +325,9 @@ Te mentí. Podes usar una estructura de datos auxiliar.
 
 Implementate `void repl_inplace(char* src)`
 usando una *rope data structure*.
+
+
+https://developers.redhat.com/blog/2020/06/02/the-joys-and-perils-of-c-and-c-aliasing-part-1#
+https://developers.redhat.com/blog/2020/06/03/the-joys-and-perils-of-aliasing-in-c-and-c-part-2#the_price_of_aliasing_exemptions
+https://doc.rust-lang.org/rust-by-example/scope/borrow/alias.html
+
