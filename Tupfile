@@ -74,13 +74,13 @@ endif
 #
 #   out/parts/md/*.md  -->  out/parts/tex/*.tex
 #
-: foreach out/parts/md/*.md |> !tex  |> out/parts/tex/%B.tex ^dbg/%B.panflute-trace
+: foreach out/parts/md/*.md |> !tex  |> out/parts/tex/%B.tex ^dbg/
 
 # Compile each standalone Tex file into a separated PDF file with LatexMK
 #
 #   out/parts/tex/*.tex  -->  out/parts/pdf/*.pdf
 #
-: foreach out/parts/tex/*.tex |> !pdf out/parts/pdf/  |> out/parts/pdf/%B.pdf out/parts/pdf/%B.aux out/parts/pdf/%B.fdb_latexmk out/parts/pdf/%B.fls out/parts/pdf/%B.log out/parts/pdf/%B.xdv out/parts/pdf/%B.console_log   out/parts/pdf/%B.bcf out/parts/pdf/%B.run.xml out/parts/pdf/%B.blg out/parts/pdf/%B.bbl out/parts/pdf/%B.snippets out/parts/pdf/%B.pygmented
+: foreach out/parts/tex/*.tex |> !pdf out/parts/pdf/  |> out/parts/pdf/%B.pdf out/parts/pdf/%B.aux out/parts/pdf/%B.fdb_latexmk out/parts/pdf/%B.fls out/parts/pdf/%B.log out/parts/pdf/%B.xdv out/parts/pdf/%B.console_log   out/parts/pdf/%B.bcf out/parts/pdf/%B.run.xml out/parts/pdf/%B.blg out/parts/pdf/%B.bbl out/parts/pdf/%B.snippets out/parts/pdf/%B.pygmented ^dbg/
 
 
 # Ensamble the Markdown files into a single "main" Markdown with Jinja2
@@ -95,8 +95,8 @@ endif
 #   out/main/md/textbook-main.md   -->  out/main/tex/textbook-main.tex
 #   out/main/tex/textbook-main.tex  -->  out/main/pdf/textbook-main.pdf
 #
-: out/main/md/textbook-main.md  |> !tex   |> out/main/tex/%1B.tex ^dbg/%B.panflute-trace
-: out/main/tex/textbook-main.tex |> !pdf out/main/pdf/  |> out/main/pdf/%B.pdf out/main/pdf/%B.aux out/main/pdf/%B.fdb_latexmk out/main/pdf/%B.fls out/main/pdf/%B.log out/main/pdf/%B.xdv  out/main/pdf/%B.console_log  out/main/pdf/%B.bcf  out/main/pdf/%B.run.xml  out/main/pdf/%B.blg  out/main/pdf/%B.bbl out/main/pdf/%B.snippets out/main/pdf/%B.pygmented
+: out/main/md/textbook-main.md  |> !tex   |> out/main/tex/%1B.tex ^dbg/
+: out/main/tex/textbook-main.tex |> !pdf out/main/pdf/  |> out/main/pdf/%B.pdf out/main/pdf/%B.aux out/main/pdf/%B.fdb_latexmk out/main/pdf/%B.fls out/main/pdf/%B.log out/main/pdf/%B.xdv out/main/pdf/%B.console_log  out/main/pdf/%B.bcf out/main/pdf/%B.run.xml  out/main/pdf/%B.blg  out/main/pdf/%B.bbl out/main/pdf/%B.snippets out/main/pdf/%B.pygmented ^dbg/
 
 
 #: |> scripts/build-latex-env.sh |>
