@@ -41,7 +41,7 @@ pandoc \
     --to=latex \
     --top-level-division=chapter \
     --number-sections \
-    -F filters/magic.py3 \
+    -F scripts/x/magic.py3 \
     --include-in-header=main/textbook-main-header.tex \
     --listings  \
     --citeproc  \
