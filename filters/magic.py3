@@ -110,7 +110,17 @@ def highlight_code_inline_and_blocks_with_pygments(elem, doc):
                 'borderline west': '{0.5pt}{-1.5pt}{black}'
                 })
 
-        attrs = ', ' + kwargs_as_latex_options(options)
+        if 'asciidiagram' in flags:
+            flags.discard('asciidiagram')
+
+            # make the code unbreakable (make it a single piece
+            # that cannot spawn multiple pages)
+            options.pop('breakable')
+
+            # see pygmentex script
+            options['sty'] = 'candombeascii'
+
+        attrs = kwargs_as_latex_options(options)
         if flags:
             attrs += ', ' + ', '.join(flags)
 

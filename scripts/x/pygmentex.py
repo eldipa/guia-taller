@@ -44,8 +44,9 @@ class CandombeStyle(Style):
     styles = {
         # No corresponding class for the following:
         #Text:                     "", # class:  ''
-        Whitespace:                "underline #f8f8f8",      # class: 'w'
-        Error:                     "#a40000 border:#ef2929", # class: 'err'
+        #Error:                     "#a40000 border:#ef2929", # class: 'err'
+        #Whitespace:                "underline #f8f8f8",      # class: 'w'
+        Whitespace:                "#f8f8f8",      # class: 'w'
         Other:                     "#000000",                # class 'x'
 
         Comment:                   "italic #8f5902", # class: 'c'
@@ -366,8 +367,10 @@ def pyg(outfile, outencoding, n, opts, extra_opts, text, usedstyles, inline_deli
 
     stylename = opts['sty']
 
-    if stylename == 'candombe':
+    honorspacewidth = False
+    if stylename in ('candombe', 'candombeascii'):
         _fmter.style = CandombeStyle
+        honorspacewidth = stylename == 'candombeascii'
     else:
         _fmter.style = get_style_by_name(stylename)
 
@@ -375,6 +378,7 @@ def pyg(outfile, outencoding, n, opts, extra_opts, text, usedstyles, inline_deli
 
     _fmter.texcomments = get_bool_opt(opts, 'texcomments', False)
     _fmter.mathescape = get_bool_opt(opts, 'mathescape', False)
+
 
     if stylename not in usedstyles:
         styledefs = _fmter.get_style_defs() \
@@ -419,6 +423,29 @@ def pyg(outfile, outencoding, n, opts, extra_opts, text, usedstyles, inline_deli
                 template = DISPLAY_LINENOS_SNIPPET_TEMPLATE
             else:
                 template = DISPLAY_SNIPPET_TEMPLATE
+
+            # The '~' is a special Latex character that means an
+            # unbreakable space and it is used by Pygments to type the
+            # spaces.
+            # Unfortunately the width of each space character is smaller
+            # than the size of the rest of the characters and while it
+            # is ok for normal source code, it is not ok when doing an
+            # ASCII diagram
+            #
+            # The fix is to replace all the ~ by a horizontal phantom
+            # space which width will be the same of the width of the
+            # given character (in this case a 'm').
+            #
+            # This should be safe even if the source code has a ~
+            # because Pygments will replace them with \PYZti{} before
+            # so we should be replacing only the ~ that represent
+            # spaces.
+            #
+            # https://github.com/pygments/pygments/blob/master/pygments/formatters/latex.py
+            # https://tex.stackexchange.com/questions/74353/what-commands-are-there-for-horizontal-spacing
+            if honorspacewidth:
+                lines = [l.replace('~',r'\hphantom{m}') for l in lines]
+
             outfile.write(template %
                 dict(number      = n,
                      style       = stylename,
