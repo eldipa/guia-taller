@@ -117,6 +117,13 @@ def highlight_code_inline_and_blocks_with_pygments(elem, doc):
             # that cannot spawn multiple pages)
             options.pop('breakable')
 
+            # make the diagram
+            # to be centered on the page
+            options.update({
+                'center': None,
+                'width': r'\linewidth/2', # TODO
+                })
+
             # see pygmentex script
             options['sty'] = 'candombeascii'
 
