@@ -3,19 +3,20 @@
 Considerá el siguiente ejercicio: reemplazar todas las apariciones
 de `"A"` por `"BB"` en un string dado.
 
-Fácil? Le pondremos una vuelta de tuerca: el reemplazo se tiene
+Fácil?
+
+Le pondremos una vuelta de tuerca: el reemplazo se tiene
 que hacer sobre el mismo buffer de entrada y sin usar un buffer
-auxiliar.
-
-Te puede parecer algo artificial pero puede que el buffer
-este alloc'ado en una region de memoria
-especial y que no sea factible alloc'ar nuevos buffers.
-
-O simplemente no hay memoria suficiente para el buffer adicional.
+auxiliar.^[
+Por que prohibirnos el uso de un buffer adicional? No es complicarse
+innecesariamente?
+En general sí, pero hay situaciones en donde uno simplemente no tiene
+memoria suficiente para un buffer adicional.
 Hoy en día las computadoras tienen decenas de gigas pero no olvides
 que los problemas a resolver son cada vez más grandes también!
+]
 
-Leer y modificar sobre el mismo buffer es un procesamiento *in place*.
+Es lo que se llama un procesamiento *in place*.
 
 Más general, cuando el buffer de entrada se *solapa* parcial o
 completamente con el de salida diremos que hay *overlapping* entre
@@ -23,6 +24,7 @@ los buffers.^[Trabajar *in place* es un caso particular de
 *overlapping*.]
 
 Y esto lo cambia todo.
+
 
 ## Dos pasadas
 
@@ -50,7 +52,9 @@ bytes escribiríamos en `dst`; sabiendo ya el tamaño exacto, reservamos
 Puede que la segunda opción suene más ineficiente y sí, estamos
 realizando 2 veces el procesamiento.
 
-Es lo que se llama un algoritmo de *dos pasadas* o *two passes*.
+Es lo que se llama un algoritmo de *dos pasadas* o *two passes*.^[\LaTeX{},
+la tecnología con la que esta hecho este libro, es un ejemplo de un programa de
+*múltiples* pasadas.]
 
 Pero considerá la primera opción en detalle *"si nos quedamos cortos,
 expandimos el buffer"*.
@@ -63,9 +67,9 @@ Pero y si no hay espacio? `realloc` se verá
 forzado a reservar un buffer entero y transferir (aka
 copiar) el contenido del buffer viejo al nuevo.
 
-Varios `realloc`s, varias copias, más lento.
+*Varios `realloc`s, varias copias, más lento.*
 
-
+Veamos entonces el algoritmo de dos pasadas:
 
 ```cpp
 char* repl_2pass(const char* src) {
@@ -132,7 +136,7 @@ se *solapen*, es decir cuando haya *overlapping*.
 
 Trabajar *in place* es solo un caso particular.
 
-La solución? Antes de comenzar la segunda fase movemos el contenido útil
+La solución? Antes de comenzar la segunda pasada movemos el contenido útil
 de `src` hacia el final del mismo.
 
 Dejando suficiente espacio al principio, el puntero de escritura `wrptr`
@@ -148,8 +152,6 @@ src > |     aaaAabbAAa     |  ???  |
                                |
                                V
                           Realloc'ados
-
-
      wrptr   rdptr
       |       |
       V       V
@@ -160,6 +162,8 @@ src > |  xxx  |     aaaAabbAAa     |
                          V
                  Contenido movido
 ```
+
+El algoritmo quedaría así:
 
 ```cpp
 char* repl_2pass_inplace(const char* src) {
@@ -213,12 +217,15 @@ char* repl_2pass_inplace(const char* src) {
 {% from 'z/templ/boxes.j2' import extra_footage %}
 
 {% call extra_footage() %}
-Por que `assert(rdptr >= wrptr)` ? Sabemos que `wrptr` *nunca* va a
+Por que `assert(rdptr >= wrptr)` ?
+
+Sabemos que `wrptr` *nunca* va a
 sobrepasar a `rdptr`, es un *invariante* del algoritmo.
 
-Pero el código es un ser viviente y lo único
-constante es el cambio. Basta con algún error de nuestra parte
+Pero el código es un ser viviente y basta con algún error de nuestra parte
 o un refactor en el futuro y podemos caer en `wrptr > rdptr`.
+
+Violación de un invariante → bug en nuestro código.
 
 Ese `assert` garantiza que si llegamos a una situación *imposible*,
 el programa crasheará. Medida drástica pero es mejor que dejar que el
@@ -227,7 +234,7 @@ programa siga en un estado indefinido.
 Notar que `assert` **no** debe usarse para manejar errores que,
 aunque parezcan improbables, puedan suceder.
 
-Por ejemplo, `malloc` podría retornarnos `NULL` si falla: el programa
+Por ejemplo, `malloc` podría retornarnos `NULL`: el programa
 debería manejar el error, incluso si es improbable y **no** usar `assert`:
 
 ```cpp
@@ -235,19 +242,19 @@ void *buf = malloc(sz);
 assert(buf != NULL);  // mal, esto no es un invariante
 
 void *buf = malloc(sz);
-if (buf != NULL) {  // mejor
+if (buf == NULL) {  // mejor
     errno = ENOMEM;
     return -1;
 }
 ```
 
-Violación de un invariante -> bug en nuestro código
 {% endcall %}
 
+#### Ejercicios
 
 {{ ej() }}
 
-Por que en `repl_2pass_inplace` usé `memmove` y no `memcpy` ? Busca sus
+Por qué en `repl_2pass_inplace` usé `memmove` y no `memcpy` ? Busca sus
 páginas de manual.
 
 ```cpp
@@ -257,9 +264,6 @@ memcpy(buf+3, buf, 3);
 
 Qué valor debería tener `dst` y que valor realmente termina teniendo?
 Probá luego con `memmove`.
-
-
-
 
 
 {{ ej() }}
@@ -273,7 +277,7 @@ lo hicimos con `memmove`.
 int resize_and_shift(FILE* f, size_t n);
 ```
 
-Asumí que `f` ya esta abierto en modo `rw+`.
+Asumí que `f` ya esta abierto en modo `"rw+"`.
 
 Tip: busca `ftell()` y `fseek()` en C y sus contrapartes en C++.
 
@@ -296,25 +300,21 @@ una forma de achicar un archivo pero POSIX sí. Busca `ftruncate()`.
 {{ ej(tricky=True) }}
 
 Dado un archivo `foo.dat`, reemplazar todas las apariciones
-de `"A"` por `"BB"` y `"CC"` por `"D"`. Cuidado que esto es más *tricky*
-de lo que aparenta.
+de `"A"` por `"BB"` y `"CC"` por `"D"`.
 
-Imaginate la secuencia `"ACC"`; el resultado final seria `"BBD"`.
+Por ejemplo, dada la secuencia `"ACC"`; el resultado final seria `"BBD"`.
 
-Si usas la misma estrategia que en `repl_2pass_inplace` para contar
-cuantos bytes se escriben contaras 3. Como el archivo tiene 3 bytes
-y vas a escribir 3 bytes deducirás, incorrectamente, que no hace falta
-ningún resize+shift.
+Tip: si implementaras una adaptación de `repl_2pass_inplace` para que
+haga los reemplazos `"A"` por `"BB"` y `"CC"` por `"D"`, funcionaría?
+Qué invariante se rompe?
 
-Pero tendrás igual una corrupción y en vez de `"BBD"` tendrás `"BBC"`.
-Tip: si no lo ves, codealo y ejecutalo a ver que pasa. Que invariante
-se rompe?
-
-Tip: Ahora que tenes una idea de por que no funcionaría contar bytes totales,
-lo que tenes que hacer es contar el máximo número de bytes por los que
-`wrptr` sobrepasa a `rdptr`.
+Recordá que para evitar una corrupción de los datos se debe cumplir
+`wrptr < rdptr` en todo momento.
 
 *Tricky*, pero no imposible.
+
+
+{#
 
 {{ ej() }}
 
@@ -326,8 +326,7 @@ Te mentí. Podes usar una estructura de datos auxiliar.
 Implementate `void repl_inplace(char* src)`
 usando una *rope data structure*.
 
-
 https://developers.redhat.com/blog/2020/06/02/the-joys-and-perils-of-c-and-c-aliasing-part-1#
 https://developers.redhat.com/blog/2020/06/03/the-joys-and-perils-of-aliasing-in-c-and-c-part-2#the_price_of_aliasing_exemptions
 https://doc.rust-lang.org/rust-by-example/scope/borrow/alias.html
-
+ #}
