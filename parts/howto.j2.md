@@ -128,6 +128,9 @@ But they **are not** supported in inline codes.
 
 In plain text, no problem: ⚠ alert, 😈evil, 💣boom
 
+Emojis can be added by name using Jinja markup:
+
+What's up {{ emoji('rocket') }}? All right {{ emoji('evil') }}
 
 ## Source code
 
