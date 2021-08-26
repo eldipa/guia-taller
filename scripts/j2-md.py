@@ -2,7 +2,7 @@
 # See https://github.com/kolypto/j2cli
 # pip install j2cli
 
-import jinja2, re
+import jinja2, re, os
 
 @jinja2.contextfunction
 def include_file_raw(ctx, name, indent=0):
@@ -33,8 +33,13 @@ def include_file_raw(ctx, name, indent=0):
     return jinja2.Markup(content)
 
 
-def as_markup_latex(tex):
-    return jinja2.Markup('```{=latex}\n%s\n```' % tex)
+def as_markup_latex(tex, block=True):
+    if block:
+        return jinja2.Markup('```{=latex}\n%s\n```' % tex)
+    else:
+        # the extra {} makes Tex to separate the tex code from the text
+        # that follows to the right
+        return jinja2.Markup('%s{}' % tex)
 
 exercise_or_project_marker = r'''\stepcounter{%(countername)s} \subsubsection{%(prefix)s \arabic{chapter}.\arabic{%(countername)s}: %(title)s}'''
 
@@ -259,6 +264,48 @@ def include_block(ctx, name, block, strip=True, indent=0, compact=True, ctx_env=
 
     return jinja2.Markup(content)
 
+@jinja2.contextfunction
+def emoji(ctx, name, path='z/img/emoji'):
+    ''' Include inline a small image, typically an emoji.
+
+        The name of the emoji must correspond to the name of the file
+        that it is in the given path but it is not necessary to include
+        the extension: emoji() will add it by default.
+
+            {{ emoji('rocket') }}
+
+        If the resulting image file does not exist or if there are
+        multiple files that correspond to the same name (but different
+        extensions), an error is raised.
+
+        In the latter case the ambiguous case can be removed adding the
+        extension to the name.
+
+            {{ emoji('rocket.png') }}
+
+        emoji() can be used to include other images that are small
+        enough as well. You probably will want to change the default
+        path however:
+
+            {{ emoji('rocket.png', 'z/img/icons/') }}
+    '''
+    path = os.path.join(path, name)
+    _, ext = os.path.splitext(path)
+    if not ext:
+        base = path
+        path = None
+        for ext in ('.pdf', '.png', '.jpeg', ''):
+            if os.path.exists(base + ext):
+                if path is not None:
+                    raise Exception(f"Emoji path is ambiguous. Is '{base + ext}' or '{path}'?")
+                path = base + ext
+    if not os.path.exists(path):
+        raise Exception(f"Emoji path does not exist: '{path}'")
+
+    tex = r'\text{\raisebox{-0.2em}{\includegraphics[height=1em]{%s}}}' % path
+    return as_markup_latex(tex, block=False)
+
+
 # DO NOT RENAME THIS FUNCTION (required by j2cli)
 def j2_environment_params():
     # Jinja2 Environment configuration hook
@@ -272,6 +319,7 @@ def j2_environment(env):
     env.globals['ej'] = exercise_marker
     env.globals['proj'] = project_marker
     env.globals['include_block'] = include_block
+    env.globals['emoji'] = emoji
 
     # Private functions
     env.globals['_diagrams__graphviz'] = _diagrams__graphviz
