@@ -236,14 +236,18 @@ digraph G {
 
 ## Exercises and Projects
 
+{% from 'z/templ/exercises.j2' import exercises %}
 
+{% call exercises() %}
 {{ ej() }}
 
 Create una función ...
 
 {{ ej() }}
 
-Create otra función ...
+Create otra función ..
+
+{% endcall %}
 
 {{ proj("Medición de performance") }}
 

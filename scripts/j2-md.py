@@ -64,6 +64,16 @@ def project_marker(ctx, title=''):
     content = exercise_or_project_marker % dict(prefix='Proj', countername='projectcounter', title=title)
     return as_markup_latex(content)
 
+@jinja2.contextfunction
+def _ex__exercises(ctx, content):
+    # content was already processed so it can be returned as it
+    return content
+
+@jinja2.contextfunction
+def _ex__projects(ctx, content):
+    # content was already processed so it can be returned as it
+    return content
+
 def strip_fenced_code_block_markers(src):
     lines = src.strip().split('\n')
     if len(lines) <= 2 or not lines[0].startswith('```') or not lines[-1].startswith('```'):
@@ -326,6 +336,8 @@ def j2_environment(env):
     env.globals['_figures__fig'] = _figures__fig
     env.globals['_boxes__extra_footage_begin'] = _boxes__extra_footage_begin
     env.globals['_boxes__extra_footage_end'] = _boxes__extra_footage_end
+    env.globals['_ex__exercises'] = _ex__exercises
+    env.globals['_ex__projects'] = _ex__projects
 
 # DO NOT RENAME THIS FUNCTION (required by j2cli)
 def extra_tests():

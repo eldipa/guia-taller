@@ -1,0 +1,10 @@
+{#
+
+#}
+{% macro exercises() -%}
+{{ _ex__exercises(caller()) }}
+{%- endmacro %}
+
+{% macro projects() -%}
+{{ _ex__projects(caller()) }}
+{%- endmacro %}
