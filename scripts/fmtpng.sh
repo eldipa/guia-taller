@@ -11,4 +11,4 @@ fi
 
 . scripts/x/run_in_docker.sh
 
-optipng -o7 --strip all -out "$2" "$1"
+optipng -o7 --strip all -quiet -out "$2" "$1"
