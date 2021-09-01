@@ -3,6 +3,7 @@
 # pip install j2cli
 
 import jinja2, re, os
+from functools import partial
 
 @jinja2.contextfunction
 def include_file_raw(ctx, name, indent=0):
@@ -41,10 +42,10 @@ def as_markup_latex(tex, block=True):
         # that follows to the right
         return jinja2.Markup('%s{}' % tex)
 
-exercise_or_project_marker = r'''\stepcounter{%(countername)s} \subsubsection{%(prefix)s \arabic{chapter}.\arabic{%(countername)s}: %(title)s}'''
+exercise_or_project_marker = r'''\refstepcounter{%(countername)s}%(label)s \subsubsection{%(prefix)s \the%(countername)s: %(title)s}'''
 
 @jinja2.contextfunction
-def exercise_marker(ctx, hazard=False, tricky=False):
+def exercise_marker(ctx, hazard=False, tricky=False, label=None):
     tag = ''
     if tricky:
         tag += '↯'
@@ -55,14 +56,61 @@ def exercise_marker(ctx, hazard=False, tricky=False):
     if tag:
         prefix = tag + ' ' + prefix
 
-    content = exercise_or_project_marker % dict(prefix=prefix, countername='exercisecounter', title='')
+    if label:
+        label = r'\label{ej:%s}' % label
+    else:
+        label = ''
+
+    content = exercise_or_project_marker % dict(prefix=prefix,
+            countername='exercisecounter', title='', label=label)
     return as_markup_latex(content)
 
 
 @jinja2.contextfunction
-def project_marker(ctx, title=''):
-    content = exercise_or_project_marker % dict(prefix='Proj', countername='projectcounter', title=title)
+def project_marker(ctx, title='', label=None):
+    if label:
+        label = r'\label{proj:%s}' % label
+    else:
+        label = ''
+    content = exercise_or_project_marker % dict(prefix='Proj',
+            countername='projectcounter', title=title, label=label)
     return as_markup_latex(content)
+
+
+def _ref__reference(from_label, to_label=None, kind=None, uppercase=None):
+    # See varioref package
+    # https://www.ctan.org/pkg/varioref
+    assert kind is not None
+    assert uppercase is not None
+
+    if kind == 'page' and uppercase:
+        raise Exception("Page references in uppercase are not supported yet")
+
+    if kind == 'refnum' and to_label is not None:
+        raise Exception("Range of reference-only is not supported")
+
+    if kind in ('refnum', 'ref') and uppercase:
+        raise Exception("Reference number in uppercase makes no sense.")
+
+    if kind == 'fancyref' and to_label is not None and uppercase:
+        raise Exception("Range of fancy-reference is not supported")
+
+    cmd = {
+            'page': 'vpageref',
+            'refnum': 'ref',
+            'fancyref': 'vref',
+            }[kind]
+
+    if uppercase:
+        cmd = cmd.capitalize()
+
+    if to_label is not None:
+        cmd += 'range{%s}{%s}' % (from_label, to_label)
+    else:
+        cmd += '{%s}' % from_label
+
+    cmd = '\\' + cmd
+    return as_markup_latex(cmd, block=False)
 
 @jinja2.contextfunction
 def _ex__exercises(ctx, content):
@@ -114,13 +162,23 @@ def _diagrams__graphviz(ctx, src, **kargs):
 
 @jinja2.contextfunction
 def _figures__fig(ctx, path, position='here', caption='', captionpos='bottom',
-        figparams={}, wrapsize=r'0.25\textwidth'):
+        label=None, figparams={}, wrapsize=r'0.25\textwidth'):
     # Build the "include the figure" tex code
     figparams_str = ','.join(f'{key}={val}' for key, val in figparams.items())
     fig_include_tex = r'\includegraphics[%s]{%s}' % (figparams_str, path)
 
     # Process the caption, if any
     caption = caption.strip()
+
+    # Label for cross-reference (if any)
+    label_tex = ''
+    if label:
+        if not caption:
+            raise ValueError(f"The image {path} must have a caption in order to have a label ({label}) to be referenced later.")
+        if ':' not in label:
+            label = 'fig:' + label
+
+        label_tex = r'\label{%s}' % label
 
     # Center the image and put a caption if any.
     assert captionpos in ('top', 'bottom')
@@ -134,13 +192,15 @@ def _figures__fig(ctx, path, position='here', caption='', captionpos='bottom',
 \centering
 \caption{%s}
 %s
-''' % (caption, fig_include_tex)
+%s
+''' % (caption, label_tex, fig_include_tex)
     elif captionpos == 'bottom':
         env_content_tex = r'''
 \centering
 %s
 \caption{%s}
-''' % (fig_include_tex, caption)
+%s
+''' % (fig_include_tex, caption, label_tex)
     else:
         assert False
 
@@ -330,6 +390,13 @@ def j2_environment(env):
     env.globals['proj'] = project_marker
     env.globals['include_block'] = include_block
     env.globals['emoji'] = emoji
+
+    ZZ = _ref__reference
+    env.globals['refnum'] = partial(ZZ, kind='refnum', uppercase=False)
+    env.globals['ref'] = partial(ZZ, kind='fancyref', uppercase=False)
+    env.globals['page'] = partial(ZZ, kind='page', uppercase=False)
+    # Not supported but it should be
+    # env.globals['Page'] = partial(ZZ, kind='page', uppercase=True)
 
     # Private functions
     env.globals['_diagrams__graphviz'] = _diagrams__graphviz

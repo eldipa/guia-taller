@@ -9,8 +9,8 @@
         {% endcall %}
 
 #}
-{% macro fig(path, position="here", captionpos="bottom", figparams={}, wrapsize='0.25\\textwidth') -%}
-{{ _figures__fig(path=path, position=position, caption=caller(),
+{% macro fig(path, position="here", captionpos="bottom", label=None, figparams={}, wrapsize='0.25\\textwidth') -%}
+{{ _figures__fig(path=path, position=position, caption=caller(), label=label,
     captionpos=captionpos, figparams=figparams, wrapsize=wrapsize) }}
 {%- endmacro %}
 

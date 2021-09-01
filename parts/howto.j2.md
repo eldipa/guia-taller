@@ -239,17 +239,17 @@ digraph G {
 {% from 'z/templ/exercises.j2' import exercises %}
 
 {% call exercises() %}
-{{ ej() }}
+{{ ej(label="super1") }}
 
 Create una función ...
 
-{{ ej() }}
+{{ ej(label="super2") }}
 
 Create otra función ..
 
 {% endcall %}
 
-{{ proj("Medición de performance") }}
+{{ proj("Medición de performance", label="medperf") }}
 
 Armate un programa que ...
 
@@ -274,7 +274,7 @@ Armate un otro programa que ...
 
 **With caption at bottom**:
 
-{% call fig("out/z/img/cpp_logo.png") %}
+{% call fig("out/z/img/cpp_logo.png", label='cpp-cap1') %}
 Aptent taciti ultrices lobortis
 natoque lacus vulputate facilisis,
 platea odio praesent justo fermentum, nascetur ultricies enim.
@@ -298,7 +298,7 @@ platea odio praesent justo fermentum, nascetur ultricies enim.
 
 **With caption; text around the figure**:
 
-{% call fig("out/z/img/cpp_logo.png", position='left') %}
+{% call fig("out/z/img/cpp_logo.png", position='left', label='cpp-cap2') %}
 Some caption here bla bla bla
 bal bal bal
 {% endcall %}
@@ -363,6 +363,31 @@ Caso de citar a "item1": [see @item1 p. 34-35].
 
 Caso de citar a "item2 y 3": [@item2 p. 30; see also @item3].
 
-Cross-reference of figures ("humanlabel-for-referencing" in this case): [@fig:humanlabel-for-referencing]
+## Cross-References
+
+Cross-reference of figures: {{ ref("fig:cpp-cap1") }} ; {{ref("fig:cpp-cap2")}}
+
+Cross-reference of exercises: {{ref('ej:super1')}} ; {{ref('ej:super2')}}
+
+Cross-reference of projects: {{ref('proj:medperf')}}
+
+Cross-references:
+
+ - On Page: {{page("fig:cpp-cap1") }} ; range: {{page("fig:cpp-cap1", "fig:cpp-cap2") }}
+ - Ref Number: {{refnum("fig:cpp-cap1") }} ; range not supported (it should be!!)
+ - Fancy ref: {{ref("fig:cpp-cap1") }} ; range: {{ref("fig:cpp-cap1", "fig:cpp-cap2") }}
+
+Cross-references (upper case version for using at the begin of a
+sentence):
+
+ - On Page: This is not supported but it should be!
+ - Ref Number: not needed, it is just a number
+ - Fancy ref: not needed, it begins with a number
+
+Cross-referencing of sections: [@sec:footnotes]
+
+`vref`: \vref{fonts}
+
+`vpageref`: \vpageref{fonts}
 
 

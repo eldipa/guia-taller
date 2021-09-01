@@ -6,6 +6,11 @@
 \newcounter{exercisecounter}[chapter]
 \newcounter{projectcounter}[chapter]
 
+% redefine the \theCounterName macros to expand the current
+% chapter number and the Counter value in arabic (like 3.2)
+\renewcommand\theexercisecounter{\arabic{chapter}.\arabic{exercisecounter}}
+\renewcommand\theprojectcounter{\arabic{chapter}.\arabic{projectcounter}}
+
 \usepackage{graphicx}
 \usepackage{wrapfig}
 
@@ -147,3 +152,13 @@
 \usepackage{relsize}
 \newcommand\cplusplus{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\relsize{-3}{\textbf{++}}}}
 \newcommand\Ccplusplus{C/C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\relsize{-3}{\textbf{++}}}}
+
+% This package allows to put references to other sections/figures/tables
+% (and others) in "fancy" way.
+% The referenced numbers (like section numbers) will be pretty-printed
+% following the default Latex macros \theCounterName.
+% For example for pretty-printing the exercisecounter it will use
+% \theexercisecounter (which by the way it was overridden above)
+\usepackage[nospace,spanish]{varioref}
+
+
