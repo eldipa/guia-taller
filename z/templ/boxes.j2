@@ -11,8 +11,8 @@
         {% endcall %}
 
 #}
-{% macro extra_footage() -%}
-{{ _boxes__extra_footage_begin() }}
+{% macro extra_footage(title='Extra footage') -%}
+{{ _boxes__extra_footage_begin(title=title) }}
 {{ caller() }}
 {{ _boxes__extra_footage_end() }}
 {%- endmacro %}

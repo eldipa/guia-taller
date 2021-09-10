@@ -252,7 +252,7 @@ def _figures__fig(ctx, path, position='here', caption='', captionpos='bottom',
     return as_markup_latex(fig_env_tex)
 
 @jinja2.contextfunction
-def _boxes__extra_footage_begin(ctx):
+def _boxes__extra_footage_begin(ctx, title):
     # Options:
     #   enhanced jigsaw: needed to not draw a closed box on each page
     #   when the extra_footage spans multiple pages. Instead draw each
@@ -263,7 +263,8 @@ def _boxes__extra_footage_begin(ctx):
     #
     #   before upper: [weird] don't collapse the paragraphs in
     #   the extra_footage.
-    flags = 'title={Extra footage},enhanced jigsaw,breakable,before upper=\setlength{\parskip}{1em}'
+    flags = 'title={%s},enhanced jigsaw,breakable,before upper=\setlength{\parskip}{1em}'
+    flags = flags % title
     return as_markup_latex(r'''\begin{tcolorbox}[%s]''' % flags)
 
 @jinja2.contextfunction
@@ -429,7 +430,9 @@ def j2_environment(env):
     env.globals['_boxes__extra_footage_begin'] = _boxes__extra_footage_begin
     env.globals['_boxes__extra_footage_end'] = _boxes__extra_footage_end
     env.globals['_ex__exercises'] = _ex__exercises
-    env.globals['_ex__projects'] = _ex__projects
+
+    # Not used
+    #env.globals['_ex__projects'] = _ex__projects
 
 # DO NOT RENAME THIS FUNCTION (required by j2cli)
 def extra_tests():
