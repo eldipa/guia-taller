@@ -1,3 +1,9 @@
+{% from 'z/templ/columns.j2' import on_columns %}
+{% from 'z/templ/diagrams.j2' import graphviz %}
+{% from 'z/templ/exercises.j2' import exercises %}
+{% from 'z/templ/figures.j2' import fig %}
+{% from 'z/templ/boxes.j2' import extra_footage %}
+
 # Layout de memoria
 
 Cuál es el *layout de memoria* de la siguiente estructura?
@@ -44,6 +50,8 @@ sizeof(s1)
 (unsigned long) 16
 ```
 
+## Alineación
+
 Cómo es posible? Veamos primero *en donde* están los atributos en esos
 16 bytes.
 
@@ -61,25 +69,9 @@ hexview(&s1, sizeof(s1))
 ```
 
 `hexview()` es una pequeña función utilitaria de mi creación; no la
-encontrarás en la librería estándar:
-
-```cpp
-void hexview(const void* mem, size_t sz) {
-    size_t i = 0;
-    for (; i < sz; ++i) {
-        if (i % 4 == 0)
-            printf("%p: ", &((const unsigned char*)mem)[i]);
-
-        printf("%02x ", ((const unsigned char*)mem)[i]);
-
-        if ((i+1) % 4 == 0)
-            printf("\n");
-    }
-
-    if (i % 4 != 0)
-        printf("\n");
-}
-```
+encontrarás en la librería estándar. Lo que hace es imprimir byte-a-byte
+un bloque de memoria en hexadecimal imprimiendo 4 bytes por fila junto
+con su dirección.
 
 Ahora, veamos que sucede si escribo un valor distinto en cada atributo.
 
@@ -102,14 +94,14 @@ Primero, en memoria el `int` 1 es representado por los bytes `01 00 00
 00`. El byte menos significativo está primero por lo que la máquina es
 *little endian*.
 
-> "Arranca por el byte más 'chico'"
+> *"Arranca por el byte más 'chico'"*
 
 Luego viene `s1.b` con 1 byte.
 
 No es una novedad.
 
-Lo que si es una novedad es que `s1.c` no este *inmediatamente* después de
-`s1.b`. No son consecutivos.
+Lo que sí es una novedad es que `s1.c` no este *inmediatamente* después de
+`s1.b`: no son consecutivos.
 
 Vemos que hay 3 bytes que no fueron tocados entre ambos: `ff ff ff`.
 
@@ -136,7 +128,7 @@ todas son múltiplos de 4:
 
 Pero por qué 4? Es siempre así? Para qué alinear las cosas?
 
-## Alineación
+### Acceso alineado/desalineado
 
 Bien, un micro puede acceder mucho más rápido a la memoria alineada.
 
@@ -144,7 +136,7 @@ Para que te des una idea este es el
 [código en ARM64](https://gcc.godbolt.org/z/G1WhPdoKG) que inicializa `s1`:
 
 
-```nasm
+```nasm;wsfix
   mov     r3, #1
   str     r3, [fp, #-20]  ; s1.a = 1
 
@@ -155,7 +147,7 @@ Para que te des una idea este es el
   str     r3, [fp, #-12]  ; s1.c = 3
 
   mov     r3, #4
-  strb    r3, [fp, #-8]  ; s1.d = 4
+  strb    r3, [fp, #-8]   ; s1.d = 4
 ```
 
 No es necesario entender exactamente ese código. Es suficiente con que
@@ -184,10 +176,10 @@ bytes y luego combinar ambos para obtener el `int` pedido.
 *Más trabajo, más lento.*
 
 [Para darte una idea](https://gcc.godbolt.org/z/1E5sa3WKv),
-este es el mismo código que el anterior pero con el
+este es el *mismo código* que el anterior pero con el
 `struct` alineado a 1 byte (y no a 4).
 
-```nasm
+```nasm;wsfix
   mov     r3, #1
   str     r3, [fp, #-16]  ; p1.a = 1
 
@@ -199,10 +191,10 @@ este es el mismo código que el anterior pero con el
   orr     r3, r3, #768
   str     r3, [fp, #-12]
   mov     r3, #0
-  strb    r3, [fp, #-8]  ; p1.c = 3 ? no es tan fácil de verlo o si?
+  strb    r3, [fp, #-8]   ; p1.c = 3 ? no es tan fácil de verlo o si?
 
   mov     r3, #4
-  strb    r3, [fp, #-7]  ; p1.d = 4
+  strb    r3, [fp, #-7]   ; p1.d = 4
 ```
 
 Notarás que hay mucho más código involucrado cuando el atributo no está
@@ -222,6 +214,7 @@ acceder a datos desalineados terminaría en un crash.
 
 
 #### Ejercicios
+{% call exercises() %}
 
 {{ ej() }}
 
@@ -301,6 +294,7 @@ Y para buffers de 2048, 4096, 8192 y 16384 bytes?
 Y si en vez de `uint32_t` usaras `uint16_t` ? y `uint64_t` ?
 
 Extra: armate un versión template `uint64_t test(T *buf, size_t num_elems)`
+{% endcall %}
 
 #### Lecturas adicionales
 
@@ -327,7 +321,7 @@ arquitectura y del size del atributo.
 En **mi** caso obtuve los siguientes sizes y direcciones (offsets) de
 cada atributo:
 
-```cpp
+```cpp;wsfix
 struct dii_t {  // size  addr
     double a;   // 8     0x00 múltiplo de a 8
     int b;      // 4     0x08 múltiplo de a 4
@@ -407,7 +401,7 @@ quedarían desalineados.
 (si no estuviera dicho padding, x[1] quedaría desalineado)
 ```
 
-#### Fun fact
+{% call extra_footage("Fun fact") %}
 
 Cuánto debería dar `sizeof(struct id_t)`?
 
@@ -426,13 +420,16 @@ a un múltiplo de 8.
 
 > La alineación y padding **dependen de la arquitectura y de los flags del
 > compilador**.
+{% endcall %}
 
 
 #### Ejercicios
+{% call exercises() %}
 
-{{ ej() }}
+{{ ej(label='memalign-struct-sizeof-offsetof') }}
 
-Tomá las estructuras `dii_t`, `idi_t`, `ssd_t`, `csc_t` y `id_t` mencionadas
+Tomá los `struct dii_t`, `struct idi_t`, `struct ssd_t`, `struct csc_t`
+y `struct id_t` mencionadas
 arriba y verificá su tamaño con `sizeof`, el tamaño de cada uno de sus
 atributos y el *offset* de cada atributo respecto al principio de la
 estructura.
@@ -443,8 +440,9 @@ bien podés usar `offsetof` si tu compilador lo soporta.
 
 {{ ej() }}
 
-Reordená los atributos de las estructuras `dii_t`, `idi_t`,
-`ssd_t`, `csc_t` y `id_t` tal que su size sea el mínimo.
+Reordená los atributos de las estructuras del ejercicio
+{{ref('ej:memalign-struct-sizeof-offsetof')}}
+tal que el size de cada una sea el mínimo.
 
 Técnicas como estas pueden ahorrar **mucha** memoria si el programa hace un
 uso intensivo de `struct`.
@@ -489,6 +487,7 @@ sobre `struct id_t`. Qué resultados obtuviste?
 
 Hacé lo mismo para `struct sp_t`.
 
+{% endcall %}
 
 ## Alineación y *packed*
 
@@ -560,6 +559,7 @@ process(&s1);   // Hacemos uso de una estructura alineada y "más rápida"
 
 
 #### Ejercicios
+{% call exercises() %}
 
 {{ ej() }}
 
@@ -668,7 +668,28 @@ Para simplificar, asumí que el archivo *no* tiene compresión,
 ni tiene una tabla de colores (*palette*) y que el formato del pixel es
 de 24 bits (3 bytes).
 
+{% endcall %}
+
 #### Lecturas adicionales
 
  - [Structure packing](http://www.catb.org/esr/structure-packing/)
 
+#### Extras
+
+```cpp
+void hexview(const void* mem, size_t sz) {
+    size_t i = 0;
+    for (; i < sz; ++i) {
+        if (i % 4 == 0)
+            printf("%p: ", &((const unsigned char*)mem)[i]);
+
+        printf("%02x ", ((const unsigned char*)mem)[i]);
+
+        if ((i+1) % 4 == 0)
+            printf("\n");
+    }
+
+    if (i % 4 != 0)
+        printf("\n");
+}
+```

@@ -1,3 +1,8 @@
+{% from 'z/templ/columns.j2' import on_columns %}
+{% from 'z/templ/diagrams.j2' import graphviz %}
+{% from 'z/templ/exercises.j2' import exercises %}
+{% from 'z/templ/figures.j2' import fig %}
+{% from 'z/templ/boxes.j2' import extra_footage %}
 
 ## C/C++
 
@@ -177,7 +182,6 @@ This used to break: bla bla `"ethernet pkt here"` bla bla
 Use the `on_columns` macro to put two pieces of text side by side into
 two or more columns (currently only in 2 columns)
 
-{% from 'z/templ/columns.j2' import on_columns %}
 
 Code:
 
@@ -224,7 +228,6 @@ are in `out/src`.
 
 ## Graphviz
 
-{% from 'z/templ/diagrams.j2' import graphviz %}
 
 {% call graphviz() %}
 ```dot
@@ -236,7 +239,6 @@ digraph G {
 
 ## Exercises and Projects
 
-{% from 'z/templ/exercises.j2' import exercises %}
 
 {% call exercises() %}
 {{ ej(label="super1") }}
@@ -247,7 +249,6 @@ Create una función ...
 
 Create otra función ..
 
-{% endcall %}
 
 {{ proj("Medición de performance", label="medperf") }}
 
@@ -257,6 +258,7 @@ Armate un programa que ...
 
 Armate un otro programa que ...
 
+{% endcall %}
 
 ## Tables
 
@@ -267,9 +269,16 @@ Armate un otro programa que ...
 
 ## Images
 
+**With caption on the right**
+
+{% call fig("out/z/img/tetris_a_b.png", captionpos='right') %}
+Tetris (en ruso: Тéтрис) fue creado por
+Alexey Pajitnov (Алексей Пажитнов) en 1984
+en la vieja USSR.
+{% endcall %}
+
 **Without caption**:
 
-{% from 'z/templ/figures.j2' import fig %}
 {% call fig("out/z/img/cpp_logo.png") %}{% endcall %}
 
 **With caption at bottom**:
@@ -322,7 +331,6 @@ platea odio praesent justo fermentum, nascetur ultricies enim.
 ## Extra footage
 
 
-{% from 'z/templ/boxes.j2' import extra_footage %}
 
 {% call extra_footage() %}
 Por que `assert(rdptr >= wrptr)` ? Sabemos que `wrptr` *nunca* va a

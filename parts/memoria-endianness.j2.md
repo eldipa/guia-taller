@@ -1,3 +1,9 @@
+{% from 'z/templ/columns.j2' import on_columns %}
+{% from 'z/templ/diagrams.j2' import graphviz %}
+{% from 'z/templ/exercises.j2' import exercises %}
+{% from 'z/templ/figures.j2' import fig %}
+{% from 'z/templ/boxes.j2' import extra_footage %}
+
 # Endianness
 
 Cuál de estos dos números es más grande? No hay trampas, estoy hablando
@@ -49,7 +55,7 @@ como estarían ordenados los bytes de `c`?
 
 Estaría el byte más significativo `0x12` a la izquierda o a la derecha?
 
-```cpp
+```cpp;diagram
                     /------- uint32_t c -----/
 char mem[] = { ...., 0x12, 0x34, 0x56, 0x78, ..... }; // big endian
               ^                                   ^
@@ -92,8 +98,9 @@ desde la parte más chica.
 
 
 #### Ejercicios
+{% call exercises() %}
 
-{{ ej() }}
+{{ ej(label='memendianness-get_endianness') }}
 
 Create una función `get_endianness()` que te indique si la máquina es
 big o little endian.
@@ -102,13 +109,14 @@ Tip: si al número `int32_t n = 42` lo casteas a `char*`, qué
 valor debería tener el primer byte apuntado por `char*` en una máquina
 big endian? Y en una little endian?
 
-{{ ej() }}
+{{ ej(label='memendianness-swap_bytes') }}
 
 Create una función `void swap_bytes(char* mem, size_t sz)` que *swappee* los
 bytes del buffer (el primer byte pasa a ser el último, el segundo pasa a
 ser el penúltimo, y así sucesivamente).
 
 Armate una variante C++: `void swap_bytes(std::vector<char>& mem)`.
+{% endcall %}
 
 
 ## Cuándo el endianness importa?
@@ -162,6 +170,7 @@ Tus datos pueden ser interpretados al revés dependiendo del endianness
 de la *otra* máquina!
 
 #### Ejercicios
+{% call exercises() %}
 
 {{ ej() }}
 
@@ -177,7 +186,8 @@ void *mem = malloc(sz);
 Si el programa corre en una máquina *big endian*, qué número debería
 enviar un atacante para que el programa víctima reserve más de 1 GB ?
 
-> Ups
+> *Ups*
+{% endcall %}
 
 
 ## Ok, el endianness puede ser un problema, como solucionarlo?
@@ -270,6 +280,7 @@ endianness nativo un número de 8 bytes.
 Y hay más. Revisá la [man page endian(3)](https://linux.die.net/man/3/endian).
 
 #### Ejercicios
+{% call exercises() %}
 
 {{ ej() }}
 
@@ -301,7 +312,8 @@ Tip: no es necesario que parsees todo el archivo.
 
 Create una función que tome un entero de 4 bytes en el endianness
 de la máquina y lo pase a little endian usando `swap_bytes` y
-`get_endianness` (implementadas en un ejercicio anterior).
+`get_endianness` (implementadas en los ejercicios
+{{ref("ej:memendianness-get_endianness", "ej:memendianness-swap_bytes") }}).
 
 Create otra función que haga la inversa: de little endian al endianness
 de la máquina.
@@ -342,6 +354,7 @@ void bubble_sort(char* buf, size_t sz) {
 
 Tip: pensá bien que función tenés que usar según el endianness de la
 máquina para resolver **este** ejercicio.
+{% endcall %}
 
 #### Lecturas adicionales
 

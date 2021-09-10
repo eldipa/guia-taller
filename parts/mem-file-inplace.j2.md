@@ -248,6 +248,10 @@ if (buf == NULL) {  // mejor
 }
 ```
 
+Y si crees que *quedarse sin memoria* es un evento improbable, en *data
+science* es algo que se toma **muy** en
+[serio](https://blog.dask.org/2021/03/11/dask_memory_usage).
+
 {% endcall %}
 
 #### Ejercicios
