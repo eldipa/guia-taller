@@ -129,7 +129,7 @@ class CandombeStyle(Style):
         Generic.Traceback:         "bold #a40000",   # class: 'gt'
     }
 
-class CandombeAsciiStyle(Style):
+class NoStyle(Style):
     background_color = "#f8f8f8"
     default_style = ""
 
@@ -375,9 +375,9 @@ def pyg(outfile, outencoding, n, opts, extra_opts, text, usedstyles, inline_deli
     stylename = opts['sty']
 
     honorspacewidth = False
-    if stylename in ('candombe', 'candombeascii'):
-        _fmter.style = CandombeAsciiStyle if stylename == 'candombeascii' else CandombeStyle
-        honorspacewidth = stylename == 'candombeascii'
+    if stylename in ('candombe', 'candombediagram', 'nostylediagram'):
+        _fmter.style = NoStyle if stylename == 'nostylediagram' else CandombeStyle
+        honorspacewidth = stylename in ('candombediagram', 'nostylediagram')
     else:
         _fmter.style = get_style_by_name(stylename)
 

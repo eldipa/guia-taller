@@ -168,7 +168,7 @@ Un `int` que no está alineado significa que el `int`
 está usando algunos bytes de una palabra y otros de la siguiente
 palabra.
 
-```
+```cpp;diagram
 :                   :                   :
 :    |------- int -------| (desalineado):
 |------- int -------| (alineado)        :
@@ -387,7 +387,7 @@ Si el compilador no hiciera eso, los atributos del siguiente `struct`
 quedarían desalineados.
 
 
-```cpp
+```cpp;diagram
 |------------- x[0] ----------|------------- x[1] ----------|
 |char|    |- short -|char|    |char|    |- short -|char|    :
 :    :    :         :    :    :    :    :         :    :    :
@@ -598,7 +598,7 @@ hexview(&s2, sizeof(s2));
 De más esta decir que `save_secret` **es un hack** y que funcionará sólo
 bajo condiciones **muy especificas** de arquitectura y compilador.
 
-{{ ej() }}
+{{ ej(hazard=True) }}
 
 Los paquetes de red Ethernet son los bloques de transmisión elementales
 que le dan vida a nuestras redes modernas.
@@ -654,9 +654,9 @@ Podés profundizar leyendo [@Arkin-EtherLeak] y [@SilenceWire, capítulo
 6]
 
 
-{{ ej() }}
+{{ ej(tricky=True) }}
 
-Volviendo al track del buen programador, el formato de archivo de las
+El formato de archivo de las
 imágenes [BMP](https://en.wikipedia.org/wiki/BMP_file_format)
 tiene tres estructuras: `struct bitmap_header`, `struct dib_header`
 y la imagen en sí en `struct pixel_storage`.

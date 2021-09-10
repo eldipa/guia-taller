@@ -142,7 +142,7 @@ de `src` hacia el final del mismo.
 Dejando suficiente espacio al principio, el puntero de escritura `wrptr`
 nunca va a alcanzar al de lectura `rdptr`.
 
-```cpp;asciidiagram
+```cpp;diagram;nostyle
        Buffer src inicial
       /-- --  --  --  -- --\
       |                    |

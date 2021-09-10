@@ -67,6 +67,8 @@ def highlight_code_inline_and_blocks_with_pygments(elem, doc):
         if not lexer:
             return
 
+        code = elem.text
+
         # Options for "pygmentex"
         options = {
             'lang': lang,
@@ -110,28 +112,45 @@ def highlight_code_inline_and_blocks_with_pygments(elem, doc):
                 'borderline west': '{0.5pt}{-1.5pt}{black}'
                 })
 
-        if 'asciidiagram' in flags:
-            flags.discard('asciidiagram')
+        if 'diagram' in flags:
+            flags.discard('diagram')
 
             # make the code unbreakable (make it a single piece
             # that cannot spawn multiple pages)
             options.pop('breakable')
 
+            # try to estimate the width of the diagram based on the
+            # maximum line length, assuming that a full line is made of
+            # 70 characters
+            estimated_linewidth_in_chars = 70
+            width_ratio = max((len(line) for line in code.split('\n'))) / estimated_linewidth_in_chars
+
+            # ratios close to 1 (or above) should be mapped to a full
+            # line width (no ratio)
+            width_ratio = min(width_ratio, 0.99)
+            if width_ratio < 0.98:
+                width_ratio = f'{width_ratio:.2f}'
+            else:
+                width_ratio = ''
+
             # make the diagram
             # to be centered on the page
             options.update({
                 'center': None,
-                'width': r'\linewidth/2', # TODO
+                'width': r'%s\linewidth' % width_ratio, # TODO
                 })
 
             # see pygmentex script
-            options['sty'] = 'candombeascii'
+            if 'nostyle' in flags:
+                flags.discard('nostyle')
+                options['sty'] = 'nostylediagram'
+            else:
+                options['sty'] = 'candombediagram'
+
 
         attrs = kwargs_as_latex_options(options)
         if flags:
             attrs += ', ' + ', '.join(flags)
-
-        code = elem.text
 
         if type(elem) == Code:
             # pick a valid separator that is not present in the code
