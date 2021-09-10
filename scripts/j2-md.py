@@ -180,8 +180,8 @@ def _figures__fig(ctx, path, position='here', caption='', captionpos='bottom',
 
         label_tex = r'\label{%s}' % label
 
-    # Center the image and put a caption if any.
-    assert captionpos in ('top', 'bottom')
+    # Center the image and put a caption if any
+    assert captionpos in ('top', 'bottom', 'left', 'right')
     if not caption:
         env_content_tex = r'''
 \centering
@@ -201,6 +201,31 @@ def _figures__fig(ctx, path, position='here', caption='', captionpos='bottom',
 \caption{%s}
 %s
 ''' % (fig_include_tex, caption, label_tex)
+    elif captionpos in ('left', 'right'):
+        img_tex = r'''
+  \begin{minipage}[c]{0.67\textwidth}
+    %(fig_include_tex)s
+  \end{minipage}
+''' % { 'caption': caption,
+        'label_tex': label_tex,
+        'fig_include_tex': fig_include_tex
+        }
+        cap_tex = r'''
+  \begin{minipage}[c]{0.3\textwidth}
+    \caption{%(caption)s}
+    %(label_tex)s
+  \end{minipage}
+''' % { 'caption': caption,
+        'label_tex': label_tex,
+        'fig_include_tex': fig_include_tex
+        }
+
+        args = (img_tex.strip(), cap_tex.strip())
+        args = args if captionpos == 'right' else args[::-1]
+
+        env_content_tex = r'''
+        %s\hfill
+        %s''' % args
     else:
         assert False
 
