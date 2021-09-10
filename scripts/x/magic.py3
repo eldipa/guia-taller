@@ -147,6 +147,13 @@ def highlight_code_inline_and_blocks_with_pygments(elem, doc):
             else:
                 options['sty'] = 'candombediagram'
 
+        # make a non-diagram code to have a fixed size of whitespace
+        # see pygmentex script
+        if 'wsfix' in flags:
+            flags.discard('wsfix')
+
+            if options['sty'] == 'candombe':
+                options['sty'] = 'candombefix'
 
         attrs = kwargs_as_latex_options(options)
         if flags:

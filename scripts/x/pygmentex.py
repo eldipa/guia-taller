@@ -375,9 +375,9 @@ def pyg(outfile, outencoding, n, opts, extra_opts, text, usedstyles, inline_deli
     stylename = opts['sty']
 
     honorspacewidth = False
-    if stylename in ('candombe', 'candombediagram', 'nostylediagram'):
+    if stylename in ('candombe', 'candombefix', 'candombediagram', 'nostylediagram'):
         _fmter.style = NoStyle if stylename == 'nostylediagram' else CandombeStyle
-        honorspacewidth = stylename in ('candombediagram', 'nostylediagram')
+        honorspacewidth = stylename in ('candombefix', 'candombediagram', 'nostylediagram')
     else:
         _fmter.style = get_style_by_name(stylename)
 
